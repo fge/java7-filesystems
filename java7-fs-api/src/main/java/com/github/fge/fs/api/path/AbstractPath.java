@@ -23,12 +23,6 @@ public abstract class AbstractPath
         return null;
     }
 
-    /**
-     * @implNote returns true if and only if the path has no {@link #getRoot()
-     * root}
-     *
-     * @return see description
-     */
     @Override
     public boolean isAbsolute()
     {
@@ -77,13 +71,6 @@ public abstract class AbstractPath
         return null;
     }
 
-    /**
-     * @implNote enforces the same filesystem policy; otherwise, behaves the
-     * same as {@link Path#startsWith(String)}.
-     *
-     * @param other the other path
-     * @return see description
-     */
     @Override
     public boolean startsWith(final Path other)
     {
@@ -109,13 +96,6 @@ public abstract class AbstractPath
         return null;
     }
 
-    /**
-     * @implNote enforces the same filesystem policy; otherwise, behaves the
-     * same as {@link Path#resolve(Path)}
-     *
-     * @param other the other path
-     * @return see description
-     */
     @Override
     public Path resolve(final Path other)
     {
@@ -125,13 +105,6 @@ public abstract class AbstractPath
 
     protected abstract Path doResolve(AbstractPath other);
 
-    /**
-     * @implNote enforces the same filesystem policy; otherwise, behaves the
-     * same as {@link Path#relativize(Path)}
-     *
-     * @param other the other path
-     * @return see description
-     */
     @Override
     public Path relativize(final Path other)
     {
@@ -155,13 +128,6 @@ public abstract class AbstractPath
         return null;
     }
 
-    /**
-     * @implNote returns the result of {@link #toAbsolutePath()}
-     *
-     * @param options ignored
-     * @return see description
-     * @throws IOException never thrown here
-     */
     @Override
     public Path toRealPath(final LinkOption... options)
         throws IOException
@@ -169,26 +135,12 @@ public abstract class AbstractPath
         return toAbsolutePath();
     }
 
-    /**
-     * @implNote always throws {@link UnsupportedOperationException}
-     *
-     * @return see description
-     */
     @Override
     public File toFile()
     {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * @implNote always throws {@link UnsupportedOperationException}
-     *
-     * @param watcher ignored
-     * @param events ignored
-     * @param modifiers ignored
-     * @return see description
-     * @throws IOException not thrown here; see description
-     */
     @Override
     public WatchKey register(final WatchService watcher,
         final WatchEvent.Kind<?>[] events,
@@ -205,15 +157,6 @@ public abstract class AbstractPath
         return null;
     }
 
-    /**
-     * @implNote enforces the "same file system" policy; if this passes, does a
-     * simple string lexicographical comparison of the two paths's {@link
-     * #toString() string representation}.
-     *
-     * @param other the other path
-     * @return see description
-     * @throws FileSystemMismatchException paths are from different filesystems
-     */
     @Override
     public int compareTo(final Path other)
     {
