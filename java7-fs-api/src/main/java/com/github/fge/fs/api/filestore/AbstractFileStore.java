@@ -10,7 +10,7 @@ import java.nio.file.attribute.FileStoreAttributeView;
  *
  * <p>Please see the {@code LIMITATIONS.md} file on the <a
  * href="https://github.com/fge/java7-filesystems">project page</a> for the
- * enforced limitation of this abstract implementation.</p>
+ * enforced limitations of this abstract implementation.</p>
  *
  * <p>Additionally, it should be noted that the API documentation does not
  * specify what value should be returned for methods returning file store sizes

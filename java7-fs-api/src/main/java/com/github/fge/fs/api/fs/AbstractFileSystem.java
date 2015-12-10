@@ -18,7 +18,7 @@ import java.util.Set;
  *
  * <p>Please see the {@code LIMITATIONS.md} file on the <a
  * href="https://github.com/fge/java7-filesystems">project page</a> for the
- * enforced limitation of this abstract implementation.</p>
+ * enforced limitations of this abstract implementation.</p>
  */
 public abstract class AbstractFileSystem
     extends FileSystem
