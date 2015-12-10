@@ -1,0 +1,78 @@
+buildscript {
+    repositories {
+        mavenCentral();
+    }
+    dependencies {
+        classpath(group: "info.solidsoft.gradle.pitest",
+            name: "gradle-pitest-plugin", version: "1.1.6");
+    }
+};
+
+subprojects {
+    repositories {
+        mavenCentral();
+    }
+
+    apply(plugin: "java");
+    apply(plugin: "maven");
+    apply(plugin: "signing");
+    apply(plugin: "idea");
+    apply(plugin: "eclipse");
+
+    group = "com.github.fge";
+    version = "0.1.0-SNAPSHOT";
+
+    def javaVersion = JavaVersion.VERSION_1_8;
+    sourceCompatibility = javaVersion;
+    targetCompatibility = javaVersion; // defaults to sourceCompatibility
+
+    dependencies {
+        testCompile(group: "org.testng", name: "testng", version: "6.9.9") {
+            exclude(group: "org.apache.ant", module: "ant");
+            exclude(group: "com.google.inject", module: "guice");
+            exclude(group: "junit", module: "junit");
+            exclude(group: "org.beanshell", module: "bsh");
+            exclude(group: "org.yaml", module: "snakeyaml");
+        };
+        testCompile(group: "org.mockito", name: "mockito-core", version:
+            "1.10.19");
+        testCompile(group: "org.assertj", name: "assertj-core", version:
+            "3.2.0");
+    }
+
+    javadoc.options.links("http://docs.oracle.com/javase/8/docs/api/");
+
+    /*
+     * Necessary! Otherwise TestNG will not be used...
+     */
+    test {
+        useTestNG() {
+            useDefaultListeners = true;
+        };
+    }
+
+    /*
+     * Necessary to generate the source and javadoc jars
+     */
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = "sources";
+        from sourceSets.main.allSource;
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = "javadoc";
+        from javadoc.destinationDir;
+    }
+
+    artifacts {
+        archives jar;
+        archives sourcesJar;
+        archives javadocJar;
+    }
+
+    task wrapper(type: Wrapper) {
+        gradleVersion = "2.9";
+        distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip";
+    }
+}
+
