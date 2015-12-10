@@ -1,1 +1,2 @@
 include "java7-fs-api";
+include "java7-fs-ftp";
