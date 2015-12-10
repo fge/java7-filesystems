@@ -74,8 +74,12 @@ and that `getAttribute()` will always throw an `UnsupportedOperationException`.
 Theoretically, a single `FileSystem` may have several file stores; this API only
 supports one file store.
 
-As a consequence, the filesystem is read only if the single supported file store
-is also read only.
+The consequences are as follows:
+
+* the filesystem is read only if its only underlying file store is also read
+only;
+* the `getFileStores()` method returns a singleton `Set` with only the defined
+file store (using `Collections.singleton()`).
 
 ### No watch service supported
 
@@ -93,4 +97,16 @@ pattern matching `PathMatcher`; unfortunately, yours truly does not know of a
 currently widely available, free implementation available.
 
 And yes, this violates the JSR 203 API contract. Sorry...
+
+## FileSystemProvider limitations
+
+### Only one file store per filesystem, redux
+
+A `FileSystemProvider` has a method called `getFileStore()` which takes a `Path`
+as an argument; but since, with the current design, a `FileSystem` only has one
+`FileStore`, the implementation of this method performs the following:
+
+```
+    return path.getFileSystem   ().getFileStores().iterator().next();
+```
 
