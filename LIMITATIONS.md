@@ -1,0 +1,53 @@
+## Introduction
+
+This file documents the limitations of file systems currently implemented using
+this package.
+
+As the library progresses, some of these limitations may be removed/lessened.
+
+## General limitations
+
+### Directory watch service not supported
+
+**TODO**: describe; `Path`'s `.register()`, `FileSystem`'s `.newWatchService()`
+
+## Path limitations
+
+### No symbolic link support
+
+This affects several items:
+
+* `Path`'s `.toRealPath()` method defaults to calling `.toAbsolutePath()`;
+* `BasicFileAttributes`'s `.isSymbolicLink()` always returns `false`;
+* `LinkOption...` arguments to `Files.readAttributes()` and others are ignored;
+* consequently, such arguments are also ignored in all copy/open/move operations
+(recall that `LinkOption` implements `OpenOption` and `CopyOption`).
+
+### Only Unix-like paths are supported
+
+Among other consequences:
+
+* the name separator is always `/`;
+* paths are absolute if and only if they have a root (and the root is always 
+`/`, too); see `Path.isAbsolute()`, `Path.getRoot()`);
+* the "current directory" name token and "parent" name token are hardcoded to 
+`.` and `..` respectively.
+
+### Cross filesystem path resolution/relativization is not supported
+
+In theory, you can resolve/relativize a `Path` against another `Path` if both
+paths share the same filesystem _provider_ (if this is not the case, a 
+`ProviderMismatchException` is thrown).
+
+This package restricts it a step further: paths cannot be resolved/relativized
+against one another if they do not share the same _filesystem_. Any attempt to
+do so will throw a `FileSystemMismatchException` (which extends
+`ProviderMismatchException`).
+
+**NOTE NOTE NOTE!!** This also affects `.compareTo()`.
+
+### Default filesystem implementation not supported
+
+This means that `Path.toFile()` will always throws an 
+`UnsupportedOperationException`.
+
