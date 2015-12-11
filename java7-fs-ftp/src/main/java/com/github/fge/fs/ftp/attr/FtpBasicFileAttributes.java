@@ -1,4 +1,4 @@
-package com.github.fge.fs.ftp.attr.attributes;
+package com.github.fge.fs.ftp.attr;
 
 import com.github.fge.fs.api.attr.attributes.AbstractBasicFileAttributes;
 import org.apache.commons.net.ftp.FTPFile;
