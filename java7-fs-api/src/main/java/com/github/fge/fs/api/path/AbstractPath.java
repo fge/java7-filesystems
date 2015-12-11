@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -199,8 +200,8 @@ public abstract class AbstractPath
     @Override
     public Iterator<Path> iterator()
     {
-        // TODO
-        return null;
+        return isEmpty() ? Collections.<Path>singleton(this).iterator()
+            : new PathIterator(this);
     }
 
     @Override
