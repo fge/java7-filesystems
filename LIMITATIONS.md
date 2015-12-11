@@ -109,4 +109,18 @@ as an argument; but since, with the current design, a `FileSystem` only has one
 ```
     return path.getFileSystem   ().getFileStores().iterator().next();
 ```
+### No support for `ByteChannel`s
 
+This means that `Files.newByteChannel()`, `FileChannel.open()` etc will all
+throw an `UnsupportedOperationException`. Only classic `InputStream` and
+`OutputStream`s are currently supported.
+
+### No support for symbolic links, redux
+
+This means that `.isSameFile()` will return true if and only if the absolute
+representation of both paths are `.equals()`. Also, all specific symbolic link
+operations in the provider throw `UnsupportedOperationException`.
+
+### No support for "hard links", either
+
+Therefore `.createLink()` also throws `UnsupportedOperationException`.

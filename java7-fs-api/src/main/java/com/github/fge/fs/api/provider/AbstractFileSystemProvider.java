@@ -1,6 +1,8 @@
 package com.github.fge.fs.api.provider;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.AccessMode;
@@ -58,13 +60,30 @@ public abstract class AbstractFileSystemProvider
     }
 
     @Override
+    public InputStream newInputStream(final Path path,
+        final OpenOption... options)
+        throws IOException
+    {
+        // TODO
+        return super.newInputStream(path, options);
+    }
+
+    @Override
+    public OutputStream newOutputStream(final Path path,
+        final OpenOption... options)
+        throws IOException
+    {
+        // TODO
+        return super.newOutputStream(path, options);
+    }
+
+    @Override
     public SeekableByteChannel newByteChannel(final Path path,
         final Set<? extends OpenOption> options,
         final FileAttribute<?>... attrs)
         throws IOException
     {
-        // TODO
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -114,8 +133,7 @@ public abstract class AbstractFileSystemProvider
     public boolean isSameFile(final Path path, final Path path2)
         throws IOException
     {
-        // TODO
-        return false;
+        return path.toAbsolutePath().equals(path2.toAbsolutePath());
     }
 
     @Override
