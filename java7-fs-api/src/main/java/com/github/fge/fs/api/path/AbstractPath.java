@@ -19,6 +19,10 @@ import java.util.Iterator;
  * <p>Please see the {@code LIMITATIONS.md} file on the <a
  * href="https://github.com/fge/java7-filesystems">project page</a> for the
  * enforced limitation of this abstract implementation.</p>
+ *
+ * <p>Please note that {@link #relativize(Path)} will throw an {@link
+ * IllegalArgumentException} if either path has a {@link #getRoot() root
+ * component}.</p>
  */
 public abstract class AbstractPath
     implements PathBase
@@ -29,6 +33,8 @@ public abstract class AbstractPath
         // TODO
         return null;
     }
+
+    protected abstract boolean isEmpty();
 
     @Override
     public boolean isAbsolute()
@@ -107,18 +113,44 @@ public abstract class AbstractPath
     public Path resolve(final Path other)
     {
         checkSameFileSystem(other);
-        return doResolve((AbstractPath) other);
+        if (other.isAbsolute())
+            return other;
+        final AbstractPath otherPath = (AbstractPath) other;
+        if (otherPath.isEmpty())
+            return this;
+        return doResolve(otherPath);
     }
 
+    /**
+     * Perform name resolution of this path against another path on the same
+     * filesystem
+     *
+     * <p>When this method is invoked, we know that the other path is neither
+     * absolute nor the empty path.</p>
+     *
+     * @param other the other path
+     * @return the resolved path
+     */
     protected abstract Path doResolve(AbstractPath other);
 
     @Override
     public Path relativize(final Path other)
     {
         checkSameFileSystem(other);
+        if (getRoot() != null || other.getRoot() != null)
+            throw new IllegalArgumentException();
         return doRelativize((AbstractPath) other);
     }
 
+    /**
+     * Perform relativization of this path against another path
+     *
+     * <p>When this method is invoked, we know that no path (either this one or
+     * the other path) have a {@link #getRoot() root component}.</p>
+     *
+     * @param other the other path
+     * @return the relativized path
+     */
     protected abstract Path doRelativize(AbstractPath other);
 
     @Override
