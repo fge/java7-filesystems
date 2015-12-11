@@ -7,15 +7,13 @@ import java.util.stream.Collectors;
 public abstract class PathElements
 {
     protected final String root;
-    protected final String rootSeparator;
     protected final String nameSeparator;
     protected final String[] names;
 
-    protected PathElements(final String root, final String rootSeparator,
-        final String nameSeparator, final String[] names)
+    protected PathElements(final String root, final String nameSeparator,
+        final String[] names)
     {
         this.root = root;
-        this.rootSeparator = rootSeparator;
         this.nameSeparator = nameSeparator;
         this.names = names;
     }
@@ -24,6 +22,8 @@ public abstract class PathElements
     {
         return root;
     }
+
+    public abstract boolean isAbsolute();
 
     public final String[] getNames()
     {
@@ -38,8 +38,7 @@ public abstract class PathElements
     @Override
     public final int hashCode()
     {
-        return 31 * Objects.hash(root, rootSeparator, nameSeparator)
-            + namesHashCode();
+        return 31 * Objects.hash(root, nameSeparator) + namesHashCode();
     }
 
     protected abstract int namesHashCode();
@@ -53,7 +52,6 @@ public abstract class PathElements
             return false;
         final PathElements other = (PathElements) obj;
         return Objects.equals(root, other.root)
-            && rootSeparator.equals(other.rootSeparator)
             && nameSeparator.equals(other.nameSeparator)
             && namesEquals(other.names);
     }
@@ -66,6 +64,6 @@ public abstract class PathElements
         final String elements = Arrays.stream(names)
             .collect(Collectors.joining(nameSeparator));
 
-        return root == null ? elements : root + rootSeparator + elements;
+        return root == null ? elements : root + elements;
     }
 }

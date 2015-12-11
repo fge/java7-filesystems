@@ -7,7 +7,13 @@ public final class UnixPathElements
 {
     public UnixPathElements(final String root, final String[] names)
     {
-        super(root, "", "/", names);
+        super(root, "/", names);
+    }
+
+    @Override
+    public boolean isAbsolute()
+    {
+        return root != null;
     }
 
     @Override
