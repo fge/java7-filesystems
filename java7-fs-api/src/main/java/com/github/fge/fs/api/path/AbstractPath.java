@@ -1,6 +1,7 @@
 package com.github.fge.fs.api.path;
 
 import com.github.fge.fs.api.FileSystemMismatchException;
+import com.github.fge.fs.api.fs.AbstractFileSystem;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,11 +28,17 @@ import java.util.Iterator;
 public abstract class AbstractPath
     implements PathBase
 {
+    protected final AbstractFileSystem fileSystem;
+
+    protected AbstractPath(final AbstractFileSystem fileSystem)
+    {
+        this.fileSystem = fileSystem;
+    }
+
     @Override
     public FileSystem getFileSystem()
     {
-        // TODO
-        return null;
+        return fileSystem;
     }
 
     protected abstract boolean isEmpty();
