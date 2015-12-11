@@ -28,18 +28,31 @@ import java.nio.file.attribute.FileStoreAttributeView;
 public abstract class AbstractFileStore
     extends FileStore
 {
+    // TODO: make those two private?
+    protected final String name;
+    protected final String type;
+
+    protected AbstractFileStore(final String name, final String type)
+    {
+        this.name = name;
+        this.type = type;
+    }
+
+    protected AbstractFileStore(final String name)
+    {
+        this(name, name);
+    }
+
     @Override
     public String name()
     {
-        // TODO
-        return null;
+        return name;
     }
 
     @Override
     public String type()
     {
-        // TODO
-        return null;
+        return type;
     }
 
     @Override
