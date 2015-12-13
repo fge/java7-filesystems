@@ -8,15 +8,18 @@ import com.github.fge.fs.api.path.elements.PathElementsFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Basic abstract {@link Path} implementation
@@ -60,7 +63,7 @@ public abstract class AbstractPath
     @Override
     public boolean isAbsolute()
     {
-        return getRoot() != null;
+        return elements.isAbsolute();
     }
 
     @Override
@@ -155,8 +158,18 @@ public abstract class AbstractPath
     @Override
     public URI toUri()
     {
-        // TODO
-        return null;
+        final PathElements newElements = factory.resolve(
+            pathContext.getRootElements(), elements);
+        final String[] names = newElements.getNames();
+        final String s = '/' + Arrays.stream(names)
+            .collect(Collectors.joining("/"));
+        final URI pathUri;
+        try {
+            pathUri = new URI(null, null, s, null);
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(e);
+        }
+        return pathContext.getBaseUri().resolve(pathUri);
     }
 
     @Override
