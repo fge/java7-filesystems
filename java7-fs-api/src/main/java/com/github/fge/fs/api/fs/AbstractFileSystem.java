@@ -6,6 +6,7 @@ import com.github.fge.fs.api.path.elements.PathElementsFactory;
 import com.github.fge.fs.api.path.PathFactory;
 
 import java.io.IOException;
+import java.nio.file.ClosedFileSystemException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
@@ -15,6 +16,7 @@ import java.nio.file.attribute.UserPrincipalLookupService;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Default abstract implementation of a {@link FileSystem}
@@ -26,6 +28,8 @@ import java.util.Set;
 public abstract class AbstractFileSystem
     extends FileSystem
 {
+    protected final AtomicBoolean open = new AtomicBoolean(true);
+
     protected final AbstractFileStore fileStore;
     protected final PathFactory pathFactory;
 
@@ -57,26 +61,30 @@ public abstract class AbstractFileSystem
     public void close()
         throws IOException
     {
-        // TODO
-
+        if (!open.getAndSet(false))
+            doClose();
     }
+
+    protected abstract void doClose()
+        throws IOException;
 
     @Override
     public boolean isOpen()
     {
-        // TODO
-        return false;
+        return open.get();
     }
 
     @Override
     public boolean isReadOnly()
     {
+        ensureOpen();
         return fileStore.isReadOnly();
     }
 
     @Override
     public String getSeparator()
     {
+        ensureOpen();
         // TODO
         return null;
     }
@@ -84,6 +92,7 @@ public abstract class AbstractFileSystem
     @Override
     public Iterable<Path> getRootDirectories()
     {
+        ensureOpen();
         // TODO
         return null;
     }
@@ -91,12 +100,14 @@ public abstract class AbstractFileSystem
     @Override
     public Iterable<FileStore> getFileStores()
     {
+        ensureOpen();
         return Collections.singleton(fileStore);
     }
 
     @Override
     public Set<String> supportedFileAttributeViews()
     {
+        ensureOpen();
         // TODO: use information from the AbstractFileStore
         return null;
     }
@@ -104,6 +115,7 @@ public abstract class AbstractFileSystem
     @Override
     public Path getPath(final String first, final String... more)
     {
+        ensureOpen();
         final PathElementsFactory factory = pathFactory.getElementsFactory();
         PathElements elements = factory.buildElements(first);
 
@@ -135,5 +147,11 @@ public abstract class AbstractFileSystem
         throws IOException
     {
         throw new UnsupportedOperationException();
+    }
+
+    private void ensureOpen()
+    {
+        if (!open.get())
+            throw new ClosedFileSystemException();
     }
 }
