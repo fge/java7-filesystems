@@ -85,8 +85,8 @@ public abstract class AbstractFileSystem
     public Iterable<Path> getRootDirectories()
     {
         ensureOpen();
-        // TODO
-        return null;
+        final Path path = buildPath(pathContext.getRootElements());
+        return Collections.singleton(path);
     }
 
     @Override
