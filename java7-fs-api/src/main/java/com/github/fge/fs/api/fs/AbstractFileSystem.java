@@ -77,8 +77,7 @@ public abstract class AbstractFileSystem
     public String getSeparator()
     {
         ensureOpen();
-        // TODO
-        return null;
+        return pathContext.getSeparator();
     }
 
     @Override
