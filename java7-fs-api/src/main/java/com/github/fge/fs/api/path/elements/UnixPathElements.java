@@ -11,6 +11,12 @@ public final class UnixPathElements
     }
 
     @Override
+    public String getRoot()
+    {
+        return root;
+    }
+
+    @Override
     public boolean isAbsolute()
     {
         return root != null;

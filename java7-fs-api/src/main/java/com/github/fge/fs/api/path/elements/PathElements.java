@@ -18,10 +18,7 @@ public abstract class PathElements
         this.names = names;
     }
 
-    public final String getRoot()
-    {
-        return root;
-    }
+    public abstract String getRoot();
 
     public abstract boolean isAbsolute();
 
