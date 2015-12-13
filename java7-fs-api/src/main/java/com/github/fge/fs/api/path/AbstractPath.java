@@ -33,15 +33,15 @@ public abstract class AbstractPath
     implements PathBase
 {
     protected final AbstractFileSystem fileSystem;
-    protected final PathElements pathElements;
+    protected final PathElements elements;
     protected final PathElementsFactory factory;
 
     protected AbstractPath(final AbstractFileSystem fileSystem,
-        final PathElements pathElements)
+        final PathElements elements)
     {
         this.fileSystem = fileSystem;
-        this.pathElements = pathElements;
-        factory = fileSystem.getPathElementsFactory();
+        this.elements = elements;
+        factory = fileSystem.getElementsFactory();
     }
 
     @Override
@@ -52,7 +52,7 @@ public abstract class AbstractPath
 
     protected boolean isEmpty()
     {
-        return pathElements.isEmptyElements();
+        return elements.isEmptyElements();
     }
 
     @Override
@@ -64,68 +64,68 @@ public abstract class AbstractPath
     @Override
     public Path getRoot()
     {
-        final PathElements elements = factory.getRoot(pathElements);
-        return fileSystem.buildPath(elements);
+        final PathElements newElements = factory.getRoot(elements);
+        return fileSystem.buildPath(newElements);
     }
 
     @Override
     public Path getFileName()
     {
-        final PathElements elements = factory.getFileName(pathElements);
-        return fileSystem.buildPath(elements);
+        final PathElements newElements = factory.getFileName(elements);
+        return fileSystem.buildPath(newElements);
     }
 
     @Override
     public Path getParent()
     {
-        final PathElements elements = factory.getParent(pathElements);
-        return fileSystem.buildPath(elements);
+        final PathElements newElements = factory.getParent(elements);
+        return fileSystem.buildPath(newElements);
     }
 
     @Override
     public int getNameCount()
     {
-        return pathElements.getNames().length;
+        return elements.getNames().length;
     }
 
     @Override
     public Path getName(final int index)
     {
-        final PathElements elements = factory.getName(pathElements, index);
-        return fileSystem.buildPath(elements);
+        final PathElements newElements = factory.getName(elements, index);
+        return fileSystem.buildPath(newElements);
     }
 
     @Override
     public Path subpath(final int beginIndex, final int endIndex)
     {
-        final PathElements elements = factory.getNames(pathElements, beginIndex,
+        final PathElements newElements = factory.getNames(elements, beginIndex,
             endIndex);
-        return fileSystem.buildPath(elements);
+        return fileSystem.buildPath(newElements);
     }
 
     @Override
     public boolean startsWith(final Path other)
     {
         checkSameFileSystem(other);
-        final AbstractPath other1 = (AbstractPath) other;
-        final PathElements otherElements = other1.pathElements;
-        return factory.startsWith(pathElements, otherElements);
+        final AbstractPath otherPath = (AbstractPath) other;
+        final PathElements otherElements = otherPath.elements;
+        return factory.startsWith(elements, otherElements);
     }
 
     @Override
     public boolean endsWith(final Path other)
     {
         checkSameFileSystem(other);
-        final AbstractPath other1 = (AbstractPath) other;
-        final PathElements otherElements = other1.pathElements;
-        return factory.endsWith(pathElements, otherElements);
+        final AbstractPath otherPath = (AbstractPath) other;
+        final PathElements otherElements = otherPath.elements;
+        return factory.endsWith(elements, otherElements);
     }
 
     @Override
     public Path normalize()
     {
-        final PathElements elements = factory.normalize(pathElements);
-        return fileSystem.buildPath(elements);
+        final PathElements newElements = factory.normalize(this.elements);
+        return fileSystem.buildPath(newElements);
     }
 
     @Override
@@ -133,8 +133,8 @@ public abstract class AbstractPath
     {
         checkSameFileSystem(other);
         final AbstractPath otherPath = (AbstractPath) other;
-        final PathElements otherElements = otherPath.pathElements;
-        final PathElements newElements = factory.resolve(pathElements,
+        final PathElements otherElements = otherPath.elements;
+        final PathElements newElements = factory.resolve(elements,
             otherElements);
         return fileSystem.buildPath(newElements);
     }
@@ -144,8 +144,8 @@ public abstract class AbstractPath
     {
         checkSameFileSystem(other);
         final AbstractPath otherPath = (AbstractPath) other;
-        final PathElements otherElements = otherPath.pathElements;
-        final PathElements newElements = factory.relativize(pathElements,
+        final PathElements otherElements = otherPath.elements;
+        final PathElements newElements = factory.relativize(elements,
             otherElements);
         return fileSystem.buildPath(newElements);
     }
@@ -203,7 +203,7 @@ public abstract class AbstractPath
     @Override
     public int hashCode()
     {
-        return Objects.hash(fileSystem, pathElements);
+        return Objects.hash(fileSystem, elements);
     }
 
     @Override
@@ -215,13 +215,13 @@ public abstract class AbstractPath
             return false;
         final AbstractPath other = (AbstractPath) obj;
         return fileSystem.equals(other.fileSystem)
-            && pathElements.equals(other.pathElements);
+            && elements.equals(other.elements);
     }
 
     @Override
     public final String toString()
     {
-        return pathElements.toString();
+        return elements.toString();
     }
 
     private void checkSameFileSystem(final Path other)

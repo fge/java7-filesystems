@@ -3,7 +3,7 @@ package com.github.fge.fs.api.fs;
 import com.github.fge.fs.api.filestore.AbstractFileStore;
 import com.github.fge.fs.api.path.elements.PathElements;
 import com.github.fge.fs.api.path.elements.PathElementsFactory;
-import com.github.fge.fs.api.path.PathEngine;
+import com.github.fge.fs.api.path.PathFactory;
 
 import java.io.IOException;
 import java.nio.file.FileStore;
@@ -27,23 +27,23 @@ public abstract class AbstractFileSystem
     extends FileSystem
 {
     protected final AbstractFileStore fileStore;
-    protected final PathEngine pathEngine;
+    protected final PathFactory pathFactory;
 
     protected AbstractFileSystem(final AbstractFileStore store,
-        final PathEngine engine)
+        final PathFactory engine)
     {
         fileStore = store;
-        pathEngine = engine;
+        pathFactory = engine;
     }
 
     public Path buildPath(final PathElements elements)
     {
-        return elements == null ? null : pathEngine.buildPath(this, elements);
+        return elements == null ? null : pathFactory.buildPath(this, elements);
     }
 
-    public PathElementsFactory getPathElementsFactory()
+    public PathElementsFactory getElementsFactory()
     {
-        return pathEngine.getPathElementsFactory();
+        return pathFactory.getElementsFactory();
     }
 
     @Override
@@ -104,7 +104,7 @@ public abstract class AbstractFileSystem
     @Override
     public Path getPath(final String first, final String... more)
     {
-        final PathElementsFactory factory = pathEngine.getPathElementsFactory();
+        final PathElementsFactory factory = pathFactory.getElementsFactory();
         PathElements elements = factory.buildElements(first);
 
         PathElements otherElements;
@@ -114,7 +114,7 @@ public abstract class AbstractFileSystem
             elements = factory.resolve(elements, otherElements);
         }
 
-        return pathEngine.buildPath(this, elements);
+        return pathFactory.buildPath(this, elements);
     }
 
     @Override

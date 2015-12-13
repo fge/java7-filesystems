@@ -6,20 +6,20 @@ import com.github.fge.fs.api.path.elements.PathElementsFactory;
 
 import java.nio.file.Path;
 
-public abstract class PathEngine
+public abstract class PathFactory
 {
-    protected final PathElementsFactory pathElementsFactory;
+    protected final PathElementsFactory elementsFactory;
 
-    protected PathEngine(final PathElementsFactory factory)
+    protected PathFactory(final PathElementsFactory elementsFactory)
     {
-        pathElementsFactory = factory;
+        this.elementsFactory = elementsFactory;
     }
 
     public abstract Path buildPath(AbstractFileSystem fs,
         PathElements elements);
 
-    public PathElementsFactory getPathElementsFactory()
+    public PathElementsFactory getElementsFactory()
     {
-        return pathElementsFactory;
+        return elementsFactory;
     }
 }
