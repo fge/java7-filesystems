@@ -2,6 +2,8 @@ package com.github.fge.fs.api.path;
 
 import com.github.fge.fs.api.FileSystemMismatchException;
 import com.github.fge.fs.api.fs.AbstractFileSystem;
+import com.github.fge.fs.api.path.elements.PathElements;
+import com.github.fge.fs.api.path.elements.PathElementsFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Basic abstract {@link Path} implementation
@@ -30,10 +33,15 @@ public abstract class AbstractPath
     implements PathBase
 {
     protected final AbstractFileSystem fileSystem;
+    protected final PathElements pathElements;
+    protected final PathElementsFactory factory;
 
-    protected AbstractPath(final AbstractFileSystem fileSystem)
+    protected AbstractPath(final AbstractFileSystem fileSystem,
+        final PathElements pathElements)
     {
         this.fileSystem = fileSystem;
+        this.pathElements = pathElements;
+        factory = fileSystem.getPathElementsFactory();
     }
 
     @Override
@@ -42,7 +50,10 @@ public abstract class AbstractPath
         return fileSystem;
     }
 
-    protected abstract boolean isEmpty();
+    protected boolean isEmpty()
+    {
+        return pathElements.isEmptyElements();
+    }
 
     @Override
     public boolean isAbsolute()
@@ -53,80 +64,79 @@ public abstract class AbstractPath
     @Override
     public Path getRoot()
     {
-        // TODO
-        return null;
+        final PathElements elements = factory.getRoot(pathElements);
+        return fileSystem.buildPath(elements);
     }
 
     @Override
     public Path getFileName()
     {
-        // TODO
-        return null;
+        final PathElements elements = factory.getFileName(pathElements);
+        return fileSystem.buildPath(elements);
     }
 
     @Override
     public Path getParent()
     {
-        // TODO
-        return null;
+        final PathElements elements = factory.getParent(pathElements);
+        return fileSystem.buildPath(elements);
     }
 
     @Override
     public int getNameCount()
     {
-        // TODO
-        return 0;
+        return pathElements.getNames().length;
     }
 
     @Override
     public Path getName(final int index)
     {
-        // TODO
-        return null;
+        final PathElements elements = factory.getName(pathElements, index);
+        return fileSystem.buildPath(elements);
     }
 
     @Override
     public Path subpath(final int beginIndex, final int endIndex)
     {
-        // TODO
-        return null;
+        final PathElements elements = factory.getNames(pathElements, beginIndex,
+            endIndex);
+        return fileSystem.buildPath(elements);
     }
 
     @Override
     public boolean startsWith(final Path other)
     {
         checkSameFileSystem(other);
-        return doStartsWith((AbstractPath) other);
+        final AbstractPath other1 = (AbstractPath) other;
+        final PathElements otherElements = other1.pathElements;
+        return factory.startsWith(pathElements, otherElements);
     }
-
-    protected abstract boolean doStartsWith(AbstractPath other);
 
     @Override
     public boolean endsWith(final Path other)
     {
         checkSameFileSystem(other);
-        return doEndsWith((AbstractPath) other);
+        final AbstractPath other1 = (AbstractPath) other;
+        final PathElements otherElements = other1.pathElements;
+        return factory.endsWith(pathElements, otherElements);
     }
-
-    protected abstract boolean doEndsWith(AbstractPath other);
 
     @Override
     public Path normalize()
     {
-        // TODO
-        return null;
+        final PathElements elements = factory.normalize(pathElements);
+        return fileSystem.buildPath(elements);
     }
 
     @Override
     public Path resolve(final Path other)
     {
         checkSameFileSystem(other);
-        if (other.isAbsolute())
-            return other;
         final AbstractPath otherPath = (AbstractPath) other;
-        if (otherPath.isEmpty())
-            return this;
-        return doResolve(otherPath);
+        final PathElements otherElements = otherPath.pathElements;
+        final PathElements newElements = factory.resolve(pathElements,
+            otherElements);
+        return fileSystem.buildPath(newElements);
     }
 
     /**
@@ -147,19 +157,12 @@ public abstract class AbstractPath
         checkSameFileSystem(other);
         if (getRoot() != null || other.getRoot() != null)
             throw new IllegalArgumentException();
-        return doRelativize((AbstractPath) other);
+        final AbstractPath otherPath = (AbstractPath) other;
+        final PathElements otherElements = otherPath.pathElements;
+        final PathElements newElements = factory.relativize(pathElements,
+            otherElements);
+        return fileSystem.buildPath(newElements);
     }
-
-    /**
-     * Perform relativization of this path against another path
-     *
-     * <p>When this method is invoked, we know that no path (either this one or
-     * the other path) have a {@link #getRoot() root component}.</p>
-     *
-     * @param other the other path
-     * @return the relativized path
-     */
-    protected abstract Path doRelativize(AbstractPath other);
 
     @Override
     public URI toUri()
@@ -209,6 +212,30 @@ public abstract class AbstractPath
     {
         checkSameFileSystem(other);
         return toString().compareTo(other.toString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(fileSystem, pathElements);
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof AbstractPath))
+            return false;
+        final AbstractPath other = (AbstractPath) obj;
+        return fileSystem.equals(other.fileSystem)
+            && pathElements.equals(other.pathElements);
+    }
+
+    @Override
+    public final String toString()
+    {
+        return pathElements.toString();
     }
 
     private void checkSameFileSystem(final Path other)

@@ -1,6 +1,9 @@
 package com.github.fge.fs.api.fs;
 
 import com.github.fge.fs.api.filestore.AbstractFileStore;
+import com.github.fge.fs.api.path.elements.PathElements;
+import com.github.fge.fs.api.path.elements.PathElementsFactory;
+import com.github.fge.fs.api.path.PathEngine;
 
 import java.io.IOException;
 import java.nio.file.FileStore;
@@ -24,10 +27,23 @@ public abstract class AbstractFileSystem
     extends FileSystem
 {
     protected final AbstractFileStore fileStore;
+    protected final PathEngine pathEngine;
 
-    protected AbstractFileSystem(final AbstractFileStore store)
+    protected AbstractFileSystem(final AbstractFileStore store,
+        final PathEngine engine)
     {
         fileStore = store;
+        pathEngine = engine;
+    }
+
+    public Path buildPath(final PathElements elements)
+    {
+        return elements == null ? null : pathEngine.buildPath(this, elements);
+    }
+
+    public PathElementsFactory getPathElementsFactory()
+    {
+        return pathEngine.getPathElementsFactory();
     }
 
     @Override
@@ -88,8 +104,17 @@ public abstract class AbstractFileSystem
     @Override
     public Path getPath(final String first, final String... more)
     {
-        // TODO
-        return null;
+        final PathElementsFactory factory = pathEngine.getPathElementsFactory();
+        PathElements elements = factory.buildElements(first);
+
+        PathElements otherElements;
+
+        for (final String s: more) {
+            otherElements = factory.buildElements(s);
+            elements = factory.resolve(elements, otherElements);
+        }
+
+        return pathEngine.buildPath(this, elements);
     }
 
     @Override
