@@ -139,24 +139,10 @@ public abstract class AbstractPath
         return fileSystem.buildPath(newElements);
     }
 
-    /**
-     * Perform name resolution of this path against another path on the same
-     * filesystem
-     *
-     * <p>When this method is invoked, we know that the other path is neither
-     * absolute nor the empty path.</p>
-     *
-     * @param other the other path
-     * @return the resolved path
-     */
-    protected abstract Path doResolve(AbstractPath other);
-
     @Override
     public Path relativize(final Path other)
     {
         checkSameFileSystem(other);
-        if (getRoot() != null || other.getRoot() != null)
-            throw new IllegalArgumentException();
         final AbstractPath otherPath = (AbstractPath) other;
         final PathElements otherElements = otherPath.pathElements;
         final PathElements newElements = factory.relativize(pathElements,
