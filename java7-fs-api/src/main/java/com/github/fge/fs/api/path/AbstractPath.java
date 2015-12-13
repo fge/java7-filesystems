@@ -34,14 +34,16 @@ public abstract class AbstractPath
 {
     protected final AbstractFileSystem fileSystem;
     protected final PathElements elements;
+    protected final PathContext pathContext;
     protected final PathElementsFactory factory;
 
     protected AbstractPath(final AbstractFileSystem fileSystem,
-        final PathElements elements)
+        final PathElements elements, final PathContext pathContext)
     {
         this.fileSystem = fileSystem;
         this.elements = elements;
-        factory = fileSystem.getElementsFactory();
+        this.pathContext = pathContext;
+        factory = pathContext.getElementsFactory();
     }
 
     @Override
@@ -160,8 +162,9 @@ public abstract class AbstractPath
     @Override
     public Path toAbsolutePath()
     {
-        // TODO
-        return null;
+        final PathElements newElements = factory.resolve(
+            pathContext.getRootElements(), elements);
+        return fileSystem.buildPath(newElements);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.github.fge.fs.api.fs;
 
 import com.github.fge.fs.api.filestore.AbstractFileStore;
+import com.github.fge.fs.api.path.PathContext;
 import com.github.fge.fs.api.path.elements.PathElements;
 import com.github.fge.fs.api.path.elements.PathElementsFactory;
-import com.github.fge.fs.api.path.PathFactory;
 
 import java.io.IOException;
 import java.nio.file.ClosedFileSystemException;
@@ -31,24 +31,16 @@ public abstract class AbstractFileSystem
     protected final AtomicBoolean open = new AtomicBoolean(true);
 
     protected final AbstractFileStore fileStore;
-    protected final PathFactory pathFactory;
+    protected final PathContext pathContext;
 
     protected AbstractFileSystem(final AbstractFileStore store,
-        final PathFactory engine)
+        final PathContext pathContext)
     {
         fileStore = store;
-        pathFactory = engine;
+        this.pathContext = pathContext;
     }
 
-    public Path buildPath(final PathElements elements)
-    {
-        return elements == null ? null : pathFactory.buildPath(this, elements);
-    }
-
-    public PathElementsFactory getElementsFactory()
-    {
-        return pathFactory.getElementsFactory();
-    }
+    public abstract Path buildPath(final PathElements elements);
 
     @Override
     public FileSystemProvider provider()
@@ -116,7 +108,7 @@ public abstract class AbstractFileSystem
     public Path getPath(final String first, final String... more)
     {
         ensureOpen();
-        final PathElementsFactory factory = pathFactory.getElementsFactory();
+        final PathElementsFactory factory = pathContext.getElementsFactory();
         PathElements elements = factory.buildElements(first);
 
         PathElements otherElements;
@@ -126,7 +118,7 @@ public abstract class AbstractFileSystem
             elements = factory.resolve(elements, otherElements);
         }
 
-        return pathFactory.buildPath(this, elements);
+        return buildPath(elements);
     }
 
     @Override
