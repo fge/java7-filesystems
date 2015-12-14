@@ -1,11 +1,15 @@
 package com.github.fge.fs.api.provider;
 
+import com.github.fge.fs.api.driver.FileSystemDriver;
+import com.github.fge.fs.api.driver.FileSystemOptionsChecker;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.AccessMode;
+import java.nio.file.ClosedFileSystemException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore;
@@ -19,6 +23,8 @@ import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Default abstract implementation of a {@link FileSystemProvider}
@@ -31,6 +37,9 @@ public abstract class AbstractFileSystemProvider
     extends FileSystemProvider
 {
     protected final String scheme;
+
+    protected final ConcurrentMap<FileSystem, FileSystemDriver> fileSystems
+        = new ConcurrentHashMap<>();
 
     protected AbstractFileSystemProvider(final String scheme)
     {
@@ -70,8 +79,10 @@ public abstract class AbstractFileSystemProvider
         final OpenOption... options)
         throws IOException
     {
-        // TODO
-        return super.newInputStream(path, options);
+        final FileSystemDriver driver = getDriver(path);
+        final FileSystemOptionsChecker checker = driver.getOptionsChecker();
+        final Set<OpenOption> optionSet = checker.checkReadOptions(options);
+        return driver.getIoDriver().getInputStream(path, optionSet);
     }
 
     @Override
@@ -79,8 +90,10 @@ public abstract class AbstractFileSystemProvider
         final OpenOption... options)
         throws IOException
     {
-        // TODO
-        return super.newOutputStream(path, options);
+        final FileSystemDriver driver = getDriver(path);
+        final FileSystemOptionsChecker checker = driver.getOptionsChecker();
+        final Set<OpenOption> optionSet = checker.checkWriteOptions(options);
+        return driver.getIoDriver().getOutputStream(path, optionSet);
     }
 
     @Override
@@ -200,5 +213,16 @@ public abstract class AbstractFileSystemProvider
     {
         // TODO
 
+    }
+
+    private FileSystemDriver getDriver(final Path path)
+    {
+        final FileSystem fs = path.getFileSystem();
+        if (!fs.isOpen())
+            throw new ClosedFileSystemException();
+        final FileSystemDriver driver = fileSystems.get(fs);
+        if (driver == null)
+            throw new ClosedFileSystemException();
+        return driver;
     }
 }
