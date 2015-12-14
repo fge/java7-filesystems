@@ -3,7 +3,6 @@ package com.github.fge.fs.ftp.attr;
 import com.github.fge.fs.api.attr.views.BasicFileAttributeViewBase;
 import org.apache.commons.net.ftp.FTPFile;
 
-import java.io.IOException;
 import java.nio.file.attribute.BasicFileAttributes;
 
 public final class FtpBasicFileAttributeView
@@ -18,7 +17,6 @@ public final class FtpBasicFileAttributeView
 
     @Override
     public BasicFileAttributes readAttributes()
-        throws IOException
     {
         return attributes;
     }

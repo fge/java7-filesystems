@@ -3,7 +3,6 @@ package com.github.fge.fs.dropbox.attr;
 import com.dropbox.core.DbxEntry;
 import com.github.fge.fs.api.attr.views.BasicFileAttributeViewBase;
 
-import java.io.IOException;
 import java.nio.file.attribute.BasicFileAttributes;
 
 public final class DropboxBasicFileAttributeView
@@ -18,7 +17,6 @@ public final class DropboxBasicFileAttributeView
 
     @Override
     public BasicFileAttributes readAttributes()
-        throws IOException
     {
         return attributes;
     }
