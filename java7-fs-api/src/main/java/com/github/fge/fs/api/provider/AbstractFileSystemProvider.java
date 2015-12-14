@@ -3,6 +3,7 @@ package com.github.fge.fs.api.provider;
 import com.github.fge.fs.api.driver.FileSystemDriver;
 import com.github.fge.fs.api.driver.FileSystemIoDriver;
 import com.github.fge.fs.api.driver.FileSystemOptionsChecker;
+import com.github.fge.fs.api.internal.VisibleForTesting;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +40,7 @@ public abstract class AbstractFileSystemProvider
 {
     protected final String scheme;
 
+    @VisibleForTesting
     protected final ConcurrentMap<FileSystem, FileSystemDriver> fileSystems
         = new ConcurrentHashMap<>();
 
@@ -145,7 +147,8 @@ public abstract class AbstractFileSystemProvider
             copyDifferentFs(source, target, options);
     }
 
-    private void copySameFs(final Path source, final Path target,
+    @VisibleForTesting
+    protected void copySameFs(final Path source, final Path target,
         final CopyOption... options)
         throws IOException
     {
@@ -156,7 +159,8 @@ public abstract class AbstractFileSystemProvider
         io.copy(source, target, optionSet);
     }
 
-    private void copyDifferentFs(final Path source, final Path target,
+    @VisibleForTesting
+    protected void copyDifferentFs(final Path source, final Path target,
         final CopyOption... options)
         throws IOException
     {
@@ -261,7 +265,8 @@ public abstract class AbstractFileSystemProvider
 
     }
 
-    private FileSystemDriver getDriver(final Path path)
+    @VisibleForTesting
+    protected FileSystemDriver getDriver(final Path path)
     {
         final FileSystem fs = path.getFileSystem();
         if (!fs.isOpen())
@@ -269,7 +274,8 @@ public abstract class AbstractFileSystemProvider
         return getDriver(fs);
     }
 
-    private FileSystemDriver getDriver(final FileSystem fs)
+    @VisibleForTesting
+    protected FileSystemDriver getDriver(final FileSystem fs)
     {
         final FileSystemDriver driver = fileSystems.get(fs);
         if (driver == null)

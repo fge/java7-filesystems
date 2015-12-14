@@ -124,3 +124,9 @@ operations in the provider throw `UnsupportedOperationException`.
 ### No support for "hard links", either
 
 Therefore `.createLink()` also throws `UnsupportedOperationException`.
+
+## File attribute view limitations
+
+### Only basic file attribute views supported
+
+This is only a temporary limitation, which will be removed later.
