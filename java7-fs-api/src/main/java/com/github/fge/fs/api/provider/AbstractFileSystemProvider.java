@@ -30,11 +30,17 @@ import java.util.Set;
 public abstract class AbstractFileSystemProvider
     extends FileSystemProvider
 {
+    protected final String scheme;
+
+    protected AbstractFileSystemProvider(final String scheme)
+    {
+        this.scheme = scheme;
+    }
+
     @Override
     public String getScheme()
     {
-        // TODO
-        return null;
+        return scheme;
     }
 
     @Override
