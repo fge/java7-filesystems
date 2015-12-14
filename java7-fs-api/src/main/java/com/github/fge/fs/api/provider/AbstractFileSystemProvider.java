@@ -121,8 +121,10 @@ public abstract class AbstractFileSystemProvider
     public void createDirectory(final Path dir, final FileAttribute<?>... attrs)
         throws IOException
     {
-        // TODO
-
+        // TODO: hardcoded...
+        if (attrs.length > 0)
+            throw new UnsupportedOperationException();
+        getDriver(dir).getIoDriver().createDirectory(dir);
     }
 
     @Override

@@ -61,6 +61,32 @@ public final class DropboxFileSystemIoDriver
         }
     }
 
+    // TODO: 403 not handled, among other things
+    @Override
+    public void createDirectory(final Path path)
+        throws IOException
+    {
+        final String name = path.toAbsolutePath().toString();
+        try {
+            dbxClient.createFolder(name);
+        } catch (DbxException e) {
+            throw new IOException(e);
+        }
+    }
+
+    @Override
+    public void delete(final Path path)
+        throws IOException
+    {
+        final String name = path.toAbsolutePath().toString();
+        try {
+            // TODO: check for directory; this API command would delete it
+            dbxClient.delete(name);
+        } catch (DbxException e) {
+            throw new IOException(e);
+        }
+    }
+
     @Override
     public void copy(final Path source, final Path target,
         final Set<CopyOption> options)

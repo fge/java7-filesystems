@@ -21,6 +21,18 @@ public interface FileSystemIoDriver
         throw new ReadOnlyFileSystemException();
     }
 
+    default void createDirectory(final Path path)
+        throws IOException
+    {
+        throw new ReadOnlyFileSystemException();
+    }
+
+    default void delete(final Path path)
+        throws IOException
+    {
+        throw new ReadOnlyFileSystemException();
+    }
+
     default void copy(final Path source, final Path target,
         final Set<CopyOption> options)
         throws IOException
