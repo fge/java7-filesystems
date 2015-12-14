@@ -131,8 +131,7 @@ public abstract class AbstractFileSystemProvider
     public void delete(final Path path)
         throws IOException
     {
-        // TODO
-
+        getDriver(path).getIoDriver().delete(path);
     }
 
     @Override
