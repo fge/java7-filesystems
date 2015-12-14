@@ -38,5 +38,5 @@ public final class DropboxBasicFileAttributes
     {
         return isDirectory() ? EPOCH
             : FileTime.from(dbxEntry.asFile().lastModified.toInstant());
-     }
+    }
 }
