@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.ReadOnlyFileSystemException;
 import java.util.Set;
 
 public interface FileSystemIoDriver
@@ -13,9 +14,17 @@ public interface FileSystemIoDriver
     InputStream getInputStream(Path path, Set<OpenOption> options)
         throws IOException;
 
-    OutputStream getOutputStream(Path path, Set<OpenOption> options)
-        throws IOException;
+    default OutputStream getOutputStream(final Path path,
+        final Set<OpenOption> options)
+        throws IOException
+    {
+        throw new ReadOnlyFileSystemException();
+    }
 
-    void copy(Path source, Path target, Set<CopyOption> options)
-        throws IOException;
+    default void copy(final Path source, final Path target,
+        final Set<CopyOption> options)
+        throws IOException
+    {
+        throw new ReadOnlyFileSystemException();
+    }
 }
