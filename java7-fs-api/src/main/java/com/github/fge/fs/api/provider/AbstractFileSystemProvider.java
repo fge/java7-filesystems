@@ -1,6 +1,7 @@
 package com.github.fge.fs.api.provider;
 
 import com.github.fge.fs.api.driver.FileSystemDriver;
+import com.github.fge.fs.api.driver.FileSystemIoDriver;
 import com.github.fge.fs.api.driver.FileSystemOptionsChecker;
 
 import java.io.IOException;
@@ -135,8 +136,53 @@ public abstract class AbstractFileSystemProvider
         final CopyOption... options)
         throws IOException
     {
-        // TODO
+        final FileSystem sourceFs = source.getFileSystem();
+        final FileSystem targetFs = target.getFileSystem();
 
+        if (sourceFs.equals(targetFs))
+            copySameFs(source, target, options);
+        else
+            copyDifferentFs(source, target, options);
+    }
+
+    private void copySameFs(final Path source, final Path target,
+        final CopyOption... options)
+        throws IOException
+    {
+        final FileSystemDriver driver = getDriver(source);
+        final FileSystemOptionsChecker checker = driver.getOptionsChecker();
+        final FileSystemIoDriver io = driver.getIoDriver();
+        final Set<CopyOption> optionSet = checker.checkCopyOptions(options);
+        io.copy(source, target, optionSet);
+    }
+
+    private void copyDifferentFs(final Path source, final Path target,
+        final CopyOption... options)
+        throws IOException
+    {
+        final FileSystemDriver srcDriver = getDriver(source);
+        final FileSystemOptionsChecker srcChecker
+            = srcDriver.getOptionsChecker();
+        final FileSystemIoDriver srcIo = srcDriver.getIoDriver();
+        final FileSystemDriver dstDriver = getDriver(target);
+        final FileSystemOptionsChecker dstChecker
+            = dstDriver.getOptionsChecker();
+        final FileSystemIoDriver dstIo = dstDriver.getIoDriver();
+
+        final Set<OpenOption> srcOpts = srcChecker.copyToReadOptions(options);
+        final Set<OpenOption> dstOpts = dstChecker.copyToWriteOptions(options);
+
+        // FIXME: hardcoded
+        final byte[] buf = new byte[8192];
+
+        try (
+            final InputStream in = srcIo.getInputStream(source, srcOpts);
+            final OutputStream out = dstIo.getOutputStream(target, dstOpts);
+        ) {
+            int nrBytes;
+            while ((nrBytes = in.read(buf)) != -1)
+                out.write(buf, 0, nrBytes);
+        }
     }
 
     @Override
@@ -220,6 +266,11 @@ public abstract class AbstractFileSystemProvider
         final FileSystem fs = path.getFileSystem();
         if (!fs.isOpen())
             throw new ClosedFileSystemException();
+        return getDriver(fs);
+    }
+
+    private FileSystemDriver getDriver(final FileSystem fs)
+    {
         final FileSystemDriver driver = fileSystems.get(fs);
         if (driver == null)
             throw new ClosedFileSystemException();
