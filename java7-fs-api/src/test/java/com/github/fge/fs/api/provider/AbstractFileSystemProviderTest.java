@@ -47,7 +47,7 @@ public class AbstractFileSystemProviderTest
         throws IOException
     {
         final Set<OpenOption> opts = mock(Set.class);
-        when(checker.checkReadOptions(any())).thenReturn(opts);
+        when(checker.getReadOptions(any())).thenReturn(opts);
 
         doReturn(driver).when(provider).getDriver(path);
 

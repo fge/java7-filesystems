@@ -84,7 +84,7 @@ public abstract class AbstractFileSystemProvider
     {
         final FileSystemDriver driver = getDriver(path);
         final FileSystemOptionsChecker checker = driver.getOptionsChecker();
-        final Set<OpenOption> optionSet = checker.checkReadOptions(options);
+        final Set<OpenOption> optionSet = checker.getReadOptions(options);
         return driver.getIoDriver().getInputStream(path, optionSet);
     }
 
