@@ -59,6 +59,10 @@ public abstract class AbstractFileSystemProvider
     public FileSystem newFileSystem(final URI uri, final Map<String, ?> env)
         throws IOException
     {
+        if (!uri.isAbsolute())
+            throw new IllegalArgumentException();
+        if (uri.isOpaque())
+            throw new IllegalArgumentException();
         // TODO
         return null;
     }
