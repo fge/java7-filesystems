@@ -8,9 +8,9 @@ public interface FileSystemOptionsChecker
 {
     Set<OpenOption> getReadOptions(OpenOption... options);
 
-    Set<OpenOption> checkWriteOptions(OpenOption... options);
+    Set<OpenOption> getWriteOptions(OpenOption... options);
 
-    Set<CopyOption> checkCopyOptions(CopyOption... options);
+    Set<CopyOption> getCopyOptions(CopyOption... options);
 
     Set<OpenOption> copyToReadOptions(CopyOption... options);
 

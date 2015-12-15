@@ -99,7 +99,7 @@ public abstract class AbstractFileSystemProvider
     {
         final FileSystemDriver driver = getDriver(path);
         final FileSystemOptionsChecker checker = driver.getOptionsChecker();
-        final Set<OpenOption> optionSet = checker.checkWriteOptions(options);
+        final Set<OpenOption> optionSet = checker.getWriteOptions(options);
         return driver.getIoDriver().getOutputStream(path, optionSet);
     }
 
@@ -160,7 +160,7 @@ public abstract class AbstractFileSystemProvider
         final FileSystemDriver driver = getDriver(source);
         final FileSystemOptionsChecker checker = driver.getOptionsChecker();
         final FileSystemIoDriver io = driver.getIoDriver();
-        final Set<CopyOption> optionSet = checker.checkCopyOptions(options);
+        final Set<CopyOption> optionSet = checker.getCopyOptions(options);
         io.copy(source, target, optionSet);
     }
 
@@ -215,7 +215,7 @@ public abstract class AbstractFileSystemProvider
         final FileSystemDriver driver = getDriver(source);
         final FileSystemOptionsChecker checker = driver.getOptionsChecker();
         final FileSystemIoDriver io = driver.getIoDriver();
-        final Set<CopyOption> optionSet = checker.checkCopyOptions(options);
+        final Set<CopyOption> optionSet = checker.getCopyOptions(options);
         io.move(source, target, optionSet);
     }
 
