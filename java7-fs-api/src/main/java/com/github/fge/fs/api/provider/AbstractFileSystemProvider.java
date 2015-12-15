@@ -234,7 +234,7 @@ public abstract class AbstractFileSystemProvider
     public boolean isHidden(final Path path)
         throws IOException
     {
-        // TODO
+        // TODO! no idea what to do here
         return false;
     }
 

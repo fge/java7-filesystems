@@ -125,6 +125,15 @@ operations in the provider throw `UnsupportedOperationException`.
 
 Therefore `.createLink()` also throws `UnsupportedOperationException`.
 
+### No support for "hidden" paths...
+
+This is due to a strangeness in the JSR 203 API. For some reason, there is _one_
+method in this API to tell whether a given `Path` is supposed to be hidden with
+regards to the API and it is located in... `FileSystemProvider`. This method is
+called `isHidden()`.
+
+In this API, this method will **always** return **false**.
+
 ## File attribute view limitations
 
 ### Only basic file attribute views supported
