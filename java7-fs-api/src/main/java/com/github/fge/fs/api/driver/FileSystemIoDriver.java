@@ -39,4 +39,12 @@ public interface FileSystemIoDriver
     {
         throw new ReadOnlyFileSystemException();
     }
+
+    default void move(final Path source, final Path target,
+        final Set<CopyOption> options)
+        throws IOException
+    {
+        copy(source, target, options);
+        delete(source);
+    }
 }

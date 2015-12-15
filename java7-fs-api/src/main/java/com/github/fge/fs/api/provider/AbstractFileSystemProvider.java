@@ -195,8 +195,32 @@ public abstract class AbstractFileSystemProvider
         final CopyOption... options)
         throws IOException
     {
-        // TODO
+        final FileSystem sourceFs = source.getFileSystem();
+        final FileSystem targetFs = target.getFileSystem();
 
+        if (sourceFs.equals(targetFs))
+            moveSameFs(source, target, options);
+        else
+            moveDifferentFs(source, target, options);
+    }
+
+    private void moveSameFs(final Path source, final Path target,
+        final CopyOption... options)
+        throws IOException
+    {
+        final FileSystemDriver driver = getDriver(source);
+        final FileSystemOptionsChecker checker = driver.getOptionsChecker();
+        final FileSystemIoDriver io = driver.getIoDriver();
+        final Set<CopyOption> optionSet = checker.checkCopyOptions(options);
+        io.move(source, target, optionSet);
+    }
+
+    private void moveDifferentFs(final Path source, final Path target,
+        final CopyOption... options)
+        throws IOException
+    {
+        copyDifferentFs(source, target, options);
+        delete(source);
     }
 
     @Override

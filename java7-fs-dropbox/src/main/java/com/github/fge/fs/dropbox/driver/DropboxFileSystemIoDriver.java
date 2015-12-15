@@ -113,4 +113,19 @@ public final class DropboxFileSystemIoDriver
             throw new IOException(e);
         }
     }
+
+    @Override
+    public void move(final Path source, final Path target,
+        final Set<CopyOption> options)
+        throws IOException
+    {
+        final String srcname = source.toAbsolutePath().toString();
+        final String dstname = target.toAbsolutePath().toString();
+
+        try {
+            dbxClient.move(srcname, dstname);
+        } catch (DbxException e) {
+            throw new IOException(e);
+        }
+    }
 }
