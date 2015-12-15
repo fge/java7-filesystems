@@ -13,6 +13,7 @@ public interface FileSystemEntity
         DIRECTORY,
         SYMLINK,
         OTHER,
+        ENOENT,
         ;
     }
 }
