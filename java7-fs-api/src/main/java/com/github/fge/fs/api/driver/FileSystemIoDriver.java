@@ -6,41 +6,36 @@ import java.io.OutputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.ReadOnlyFileSystemException;
 import java.util.Set;
 
-public interface FileSystemIoDriver
+public abstract class FileSystemIoDriver
 {
-    InputStream getInputStream(Path path, Set<OpenOption> options)
+    protected final FileSystemEntityProvider entityProvider;
+
+    protected FileSystemIoDriver(final FileSystemEntityProvider provider)
+    {
+        entityProvider = provider;
+    }
+
+    public abstract InputStream getInputStream(Path path,
+        Set<OpenOption> options)
         throws IOException;
 
-    default OutputStream getOutputStream(final Path path,
+    public abstract OutputStream getOutputStream(final Path path,
         final Set<OpenOption> options)
-        throws IOException
-    {
-        throw new ReadOnlyFileSystemException();
-    }
+        throws IOException;
 
-    default void createDirectory(final Path path)
-        throws IOException
-    {
-        throw new ReadOnlyFileSystemException();
-    }
+    public abstract void createDirectory(final Path path)
+        throws IOException;
 
-    default void delete(final Path path)
-        throws IOException
-    {
-        throw new ReadOnlyFileSystemException();
-    }
+    public abstract void delete(final Path path)
+        throws IOException;
 
-    default void copy(final Path source, final Path target,
+    public abstract void copy(final Path source, final Path target,
         final Set<CopyOption> options)
-        throws IOException
-    {
-        throw new ReadOnlyFileSystemException();
-    }
+        throws IOException;
 
-    default void move(final Path source, final Path target,
+    public void move(final Path source, final Path target,
         final Set<CopyOption> options)
         throws IOException
     {

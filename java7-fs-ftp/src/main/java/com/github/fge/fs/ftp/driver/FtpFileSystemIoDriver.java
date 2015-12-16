@@ -1,6 +1,6 @@
 package com.github.fge.fs.ftp.driver;
 
-import com.github.fge.fs.api.driver.FileSystemIoDriver;
+import com.github.fge.fs.api.driver.ReadOnlyFileSystemIoDriver;
 import org.apache.commons.net.ftp.FTPClient;
 
 import java.io.IOException;
@@ -10,12 +10,13 @@ import java.nio.file.Path;
 import java.util.Set;
 
 public final class FtpFileSystemIoDriver
-    implements FileSystemIoDriver
+    extends ReadOnlyFileSystemIoDriver
 {
     private final FTPClient ftpClient;
 
     public FtpFileSystemIoDriver(final FTPClient ftpClient)
     {
+        super(new FtpFileSystemEntityProvider(ftpClient));
         this.ftpClient = ftpClient;
     }
 

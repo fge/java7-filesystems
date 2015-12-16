@@ -17,12 +17,13 @@ import java.nio.file.StandardOpenOption;
 import java.util.Set;
 
 public final class DropboxFileSystemIoDriver
-    implements FileSystemIoDriver
+    extends FileSystemIoDriver
 {
     private final DbxClient dbxClient;
 
     public DropboxFileSystemIoDriver(final DbxClient dbxClient)
     {
+        super(new DropboxFileSystemEntityProvider(dbxClient));
         this.dbxClient = dbxClient;
     }
 

@@ -2,7 +2,7 @@ package com.github.fge.fs.api.driver;
 
 import java.nio.file.AccessMode;
 
-public enum EnoentFileSystemEntity
+public enum NoSuchFileSystemEntity
     implements FileSystemEntity
 {
     INSTANCE,

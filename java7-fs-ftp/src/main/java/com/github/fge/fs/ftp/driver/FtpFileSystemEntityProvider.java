@@ -1,6 +1,6 @@
 package com.github.fge.fs.ftp.driver;
 
-import com.github.fge.fs.api.driver.EnoentFileSystemEntity;
+import com.github.fge.fs.api.driver.NoSuchFileSystemEntity;
 import com.github.fge.fs.api.driver.FileSystemEntity;
 import com.github.fge.fs.api.driver.FileSystemEntityProvider;
 import org.apache.commons.net.ftp.FTPClient;
@@ -30,7 +30,7 @@ public final class FtpFileSystemEntityProvider
             return new FtpFileSystemEntity(ftpFile);
         final int reply = ftpClient.getReply();
         if (FTPReply.isPositiveCompletion(reply))
-            return EnoentFileSystemEntity.INSTANCE;
+            return NoSuchFileSystemEntity.INSTANCE;
         throw new IOException("FTP protocol error; reply code = " + reply);
     }
 }
