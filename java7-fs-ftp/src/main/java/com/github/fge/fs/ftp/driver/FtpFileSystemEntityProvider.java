@@ -27,10 +27,10 @@ public final class FtpFileSystemEntityProvider
         final String pathname = path.toAbsolutePath().toString();
         final FTPFile ftpFile = ftpClient.mlistFile(pathname);
         if (ftpFile != null)
-            return new FtpFileSystemEntity(ftpFile);
+            return new FtpFileSystemEntity(path, ftpFile);
         final int reply = ftpClient.getReply();
         if (FTPReply.isPositiveCompletion(reply))
-            return NoSuchFileSystemEntity.INSTANCE;
+            return NoSuchFileSystemEntity.forPath(path);
         throw new IOException("FTP protocol error; reply code = " + reply);
     }
 }

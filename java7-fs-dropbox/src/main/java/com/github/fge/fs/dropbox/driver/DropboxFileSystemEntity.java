@@ -4,14 +4,16 @@ import com.dropbox.core.DbxEntry;
 import com.github.fge.fs.api.driver.FileSystemEntity;
 
 import java.nio.file.AccessMode;
+import java.nio.file.Path;
 
 public final class DropboxFileSystemEntity
-    implements FileSystemEntity
+    extends FileSystemEntity
 {
     private final DbxEntry entry;
 
-    public DropboxFileSystemEntity(final DbxEntry entry)
+    public DropboxFileSystemEntity(final Path path, final DbxEntry entry)
     {
+        super(path);
         this.entry = entry;
     }
 

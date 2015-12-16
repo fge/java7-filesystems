@@ -4,11 +4,12 @@ import com.github.fge.fs.api.driver.FileSystemEntity;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.nio.file.AccessMode;
+import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.Map;
 
 public final class FtpFileSystemEntity
-    implements FileSystemEntity
+    extends FileSystemEntity
 {
     private static final int[] FTP_ACCESS_TYPE = {
         FTPFile.USER_ACCESS, FTPFile.GROUP_ACCESS, FTPFile.WORLD_ACCESS
@@ -25,8 +26,9 @@ public final class FtpFileSystemEntity
 
     private final FTPFile ftpFile;
 
-    public FtpFileSystemEntity(final FTPFile file)
+    public FtpFileSystemEntity(final Path path, final FTPFile file)
     {
+        super(path);
         ftpFile = file;
     }
 

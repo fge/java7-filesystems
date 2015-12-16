@@ -40,7 +40,7 @@ public final class DropboxFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity entity = entityProvider.getEntity(path);
-        final String name = path.toAbsolutePath().toString();
+        final String name = entity.toString();
 
         switch (entity.getType()) {
             case ENOENT:
@@ -66,7 +66,7 @@ public final class DropboxFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity entity = entityProvider.getEntity(path);
-        final String name = path.toAbsolutePath().toString();
+        final String name = entity.toString();
 
         switch (entity.getType()) {
             case ENOENT:
@@ -96,7 +96,7 @@ public final class DropboxFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity entity = entityProvider.getEntity(path);
-        final String name = path.toAbsolutePath().toString();
+        final String name = entity.toString();
 
         if (entity.getType() != FileSystemEntity.Type.ENOENT)
             throw new FileAlreadyExistsException(name);
@@ -113,7 +113,7 @@ public final class DropboxFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity entity = entityProvider.getEntity(path);
-        final String name = path.toAbsolutePath().toString();
+        final String name = entity.toString();
 
         switch (entity.getType()) {
             case ENOENT:
@@ -137,7 +137,7 @@ public final class DropboxFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity srcEntity = entityProvider.getEntity(source);
-        final String srcname = source.toAbsolutePath().toString();
+        final String srcname = srcEntity.toString();
 
         switch (srcEntity.getType()) {
             case ENOENT:
@@ -150,7 +150,7 @@ public final class DropboxFileSystemIoDriver
         }
 
         final FileSystemEntity dstEntity = entityProvider.getEntity(target);
-        final String dstname = target.toAbsolutePath().toString();
+        final String dstname = dstEntity.toString();
 
         switch (dstEntity.getType()) {
             case ENOENT:
@@ -176,7 +176,7 @@ public final class DropboxFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity srcEntity = entityProvider.getEntity(source);
-        final String srcname = source.toAbsolutePath().toString();
+        final String srcname = srcEntity.toString();
 
         switch (srcEntity.getType()) {
             case ENOENT:
@@ -189,7 +189,7 @@ public final class DropboxFileSystemIoDriver
         }
 
         final FileSystemEntity dstEntity = entityProvider.getEntity(target);
-        final String dstname = target.toAbsolutePath().toString();
+        final String dstname = dstEntity.toString();
 
         switch (dstEntity.getType()) {
             case ENOENT:
@@ -215,7 +215,7 @@ public final class DropboxFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity entity = entityProvider.getEntity(dir);
-        final String name = dir.toAbsolutePath().toString();
+        final String name = entity.toString();
 
         switch (entity.getType()) {
             case ENOENT:

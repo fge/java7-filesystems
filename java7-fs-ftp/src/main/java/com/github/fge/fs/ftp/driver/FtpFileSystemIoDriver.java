@@ -36,7 +36,7 @@ public final class FtpFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity entity = entityProvider.getEntity(path);
-        final String name = path.toAbsolutePath().toString();
+        final String name = entity.toString();
 
         switch (entity.getType()) {
             case ENOENT:
@@ -56,7 +56,7 @@ public final class FtpFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity entity = entityProvider.getEntity(dir);
-        final String name = dir.toAbsolutePath().toString();
+        final String name = entity.toString();
 
         switch (entity.getType()) {
             case ENOENT:

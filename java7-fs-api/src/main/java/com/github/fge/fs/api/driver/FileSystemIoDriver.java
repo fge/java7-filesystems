@@ -51,7 +51,7 @@ public abstract class FileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity entity = entityProvider.getEntity(path);
-        final String name = path.toAbsolutePath().toString();
+        final String name = entity.toString();
 
         if (entity.getType() == FileSystemEntity.Type.ENOENT)
             throw new NoSuchFileException(name);

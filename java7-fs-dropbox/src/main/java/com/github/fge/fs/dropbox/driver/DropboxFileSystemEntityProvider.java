@@ -27,8 +27,8 @@ public final class DropboxFileSystemEntityProvider
         final String pathname = path.toAbsolutePath().toString();
         try {
             final DbxEntry entry = dbxClient.getMetadata(pathname);
-            return entry == null ? NoSuchFileSystemEntity.INSTANCE
-                : new DropboxFileSystemEntity(entry);
+            return entry == null ? NoSuchFileSystemEntity.forPath(path)
+                : new DropboxFileSystemEntity(path, entry);
         } catch (DbxException e) {
             throw new IOException(e);
         }
