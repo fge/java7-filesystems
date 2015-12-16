@@ -117,8 +117,7 @@ public abstract class AbstractFileSystemProvider
         final DirectoryStream.Filter<? super Path> filter)
         throws IOException
     {
-        // TODO
-        return null;
+        return getDriver(dir).getIoDriver().getDirectoryStream(dir, filter);
     }
 
     @Override
