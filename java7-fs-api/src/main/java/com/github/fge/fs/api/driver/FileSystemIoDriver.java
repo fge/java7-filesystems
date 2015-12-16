@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.AccessMode;
 import java.nio.file.CopyOption;
+import java.nio.file.DirectoryStream;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -58,4 +59,8 @@ public abstract class FileSystemIoDriver
         if (!entity.hasAccess(modes))
             throw new AccessDeniedException(name);
     }
+
+    public abstract DirectoryStream<Path> getDirectoryStream(Path dir,
+        DirectoryStream.Filter<? super Path> filter)
+        throws IOException;
 }

@@ -1,8 +1,10 @@
 package com.github.fge.fs.dropbox.driver;
 
 import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWriteMode;
+import com.github.fge.fs.api.directory.DefaultDirectoryStream;
 import com.github.fge.fs.api.driver.FileSystemEntity;
 import com.github.fge.fs.api.driver.FileSystemIoDriver;
 
@@ -10,13 +12,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.CopyOption;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.NotDirectoryException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public final class DropboxFileSystemIoDriver
     extends FileSystemIoDriver
@@ -202,5 +207,35 @@ public final class DropboxFileSystemIoDriver
         } catch (DbxException e) {
             throw new IOException(e);
         }
+    }
+
+    @Override
+    public DirectoryStream<Path> getDirectoryStream(final Path dir,
+        final DirectoryStream.Filter<? super Path> filter)
+        throws IOException
+    {
+        final FileSystemEntity entity = entityProvider.getEntity(dir);
+        final String name = dir.toAbsolutePath().toString();
+
+        switch (entity.getType()) {
+            case ENOENT:
+                throw new NoSuchFileException(name);
+            case DIRECTORY:
+                break;
+            default:
+                throw new NotDirectoryException(name);
+        }
+
+        final DbxEntry.WithChildren children;
+        try {
+            children = dbxClient.getMetadataWithChildren(name);
+        } catch (DbxException e) {
+            throw new IOException(e);
+        }
+
+        final Stream<Path> stream = children.children.stream()
+            .map(entry -> dir.resolve(entry.name));
+
+        return new DefaultDirectoryStream(stream, filter);
     }
 }
