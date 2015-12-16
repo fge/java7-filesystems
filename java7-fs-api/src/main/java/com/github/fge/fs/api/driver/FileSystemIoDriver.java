@@ -3,7 +3,10 @@ package com.github.fge.fs.api.driver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.AccessMode;
 import java.nio.file.CopyOption;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Set;
@@ -41,5 +44,18 @@ public abstract class FileSystemIoDriver
     {
         copy(source, target, options);
         delete(source);
+    }
+
+    public void checkAccess(final Path path, final AccessMode... modes)
+        throws IOException
+    {
+        final FileSystemEntity entity = entityProvider.getEntity(path);
+        final String name = path.toAbsolutePath().toString();
+
+        if (entity.getType() == FileSystemEntity.Type.ENOENT)
+            throw new NoSuchFileException(name);
+
+        if (!entity.hasAccess(modes))
+            throw new AccessDeniedException(name);
     }
 }

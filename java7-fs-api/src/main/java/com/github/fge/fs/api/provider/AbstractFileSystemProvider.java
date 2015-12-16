@@ -253,8 +253,7 @@ public abstract class AbstractFileSystemProvider
     public void checkAccess(final Path path, final AccessMode... modes)
         throws IOException
     {
-        // TODO
-
+        getDriver(path).getIoDriver().checkAccess(path, modes);
     }
 
     @Override
