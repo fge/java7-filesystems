@@ -26,11 +26,11 @@ public final class FtpFileSystemEntityProvider
     {
         final String pathname = path.toAbsolutePath().toString();
         final FTPFile ftpFile = ftpClient.mlistFile(pathname);
-        if (ftpFile != null)
-            return new FtpFileSystemEntity(path, ftpFile);
         final int reply = ftpClient.getReply();
-        if (FTPReply.isPositiveCompletion(reply))
+        if (!FTPReply.isPositiveCompletion(reply))
+            throw new IOException("FTP protocol error; reply code = " + reply);
+        if (ftpFile == null)
             return NoSuchFileSystemEntity.forPath(path);
-        throw new IOException("FTP protocol error; reply code = " + reply);
+        return new FtpRegularFileSystemEntity(path, ftpClient, ftpFile);
     }
 }

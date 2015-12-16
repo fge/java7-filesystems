@@ -5,8 +5,9 @@ import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWriteMode;
 import com.github.fge.fs.api.directory.DefaultDirectoryStream;
-import com.github.fge.fs.api.entity.FileSystemEntity;
 import com.github.fge.fs.api.driver.FileSystemIoDriver;
+import com.github.fge.fs.api.entity.EntityType;
+import com.github.fge.fs.api.entity.FileSystemEntity;
 import com.github.fge.fs.dropbox.entity.DropboxFileSystemEntityProvider;
 
 import java.io.IOException;
@@ -41,24 +42,7 @@ public final class DropboxFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity entity = entityProvider.getEntity(path);
-        final String name = entity.toString();
-
-        switch (entity.getType()) {
-            case ENOENT:
-                throw new NoSuchFileException(name);
-            case REGULAR_FILE:
-                break;
-            default:
-                throw new IOException(name + " is not a regular file");
-        }
-
-        final DbxClient.Downloader downloader;
-        try {
-            downloader = dbxClient.startGetFile(name, null);
-        } catch (DbxException e) {
-            throw new IOException(e);
-        }
-        return new DropboxInputStream(downloader);
+        return entity.getInputStream();
     }
 
     @Override
@@ -99,7 +83,7 @@ public final class DropboxFileSystemIoDriver
         final FileSystemEntity entity = entityProvider.getEntity(path);
         final String name = entity.toString();
 
-        if (entity.getType() != FileSystemEntity.Type.ENOENT)
+        if (entity.getType() != EntityType.ENOENT)
             throw new FileAlreadyExistsException(name);
 
         try {

@@ -1,6 +1,7 @@
 package com.github.fge.fs.ftp.entity;
 
-import com.github.fge.fs.api.entity.FileSystemEntity;
+import com.github.fge.fs.api.entity.AbstractFileSystemEntity;
+import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.nio.file.AccessMode;
@@ -8,14 +9,14 @@ import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.Map;
 
-public final class FtpFileSystemEntity
-    extends FileSystemEntity
+public abstract class FtpFileSystemEntity
+    extends AbstractFileSystemEntity
 {
-    private static final int[] FTP_ACCESS_TYPE = {
+    protected static final int[] FTP_ACCESS_TYPE = {
         FTPFile.USER_ACCESS, FTPFile.GROUP_ACCESS, FTPFile.WORLD_ACCESS
     };
 
-    private static final Map<AccessMode, Integer> PERMISSIONS_MAP
+    protected static final Map<AccessMode, Integer> PERMISSIONS_MAP
         = new EnumMap<>(AccessMode.class);
 
     static {
@@ -24,27 +25,19 @@ public final class FtpFileSystemEntity
         PERMISSIONS_MAP.put(AccessMode.EXECUTE, FTPFile.EXECUTE_PERMISSION);
     }
 
-    private final FTPFile ftpFile;
+    protected final FTPClient ftpClient;
+    protected final FTPFile ftpFile;
 
-    public FtpFileSystemEntity(final Path path, final FTPFile file)
+    protected FtpFileSystemEntity(final Path path, final FTPClient ftpClient,
+        final FTPFile ftpFile)
     {
         super(path);
-        ftpFile = file;
+        this.ftpClient = ftpClient;
+        this.ftpFile = ftpFile;
     }
 
     @Override
-    public Type getType()
-    {
-        if (ftpFile.isFile())
-            return Type.REGULAR_FILE;
-        if (ftpFile.isDirectory())
-            return Type.DIRECTORY;
-        // TODO: because no symlink support...
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean hasAccess(final AccessMode... modes)
+    public final boolean hasAccess(final AccessMode... modes)
     {
         int permission;
 

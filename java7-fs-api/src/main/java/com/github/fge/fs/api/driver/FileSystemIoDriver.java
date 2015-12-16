@@ -1,5 +1,6 @@
 package com.github.fge.fs.api.driver;
 
+import com.github.fge.fs.api.entity.EntityType;
 import com.github.fge.fs.api.entity.FileSystemEntity;
 import com.github.fge.fs.api.entity.FileSystemEntityProvider;
 
@@ -56,7 +57,7 @@ public abstract class FileSystemIoDriver
         final FileSystemEntity entity = entityProvider.getEntity(path);
         final String name = entity.toString();
 
-        if (entity.getType() == FileSystemEntity.Type.ENOENT)
+        if (entity.getType() == EntityType.ENOENT)
             throw new NoSuchFileException(name);
 
         if (!entity.hasAccess(modes))

@@ -37,18 +37,7 @@ public final class FtpFileSystemIoDriver
         throws IOException
     {
         final FileSystemEntity entity = entityProvider.getEntity(path);
-        final String name = entity.toString();
-
-        switch (entity.getType()) {
-            case ENOENT:
-                throw new NoSuchFileException(name);
-            case REGULAR_FILE:
-                break;
-            default:
-                throw new IOException(name + " is not a regular file");
-        }
-
-        return ftpClient.retrieveFileStream(name);
+        return entity.getInputStream();
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.github.fge.fs.api.entity;
 
+import java.io.InputStream;
 import java.nio.file.AccessMode;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 public final class NoSuchFileSystemEntity
-    extends FileSystemEntity
+    extends AbstractFileSystemEntity
 {
     public static FileSystemEntity forPath(final Path path)
     {
@@ -17,14 +19,21 @@ public final class NoSuchFileSystemEntity
     }
 
     @Override
-    public Type getType()
+    public EntityType getType()
     {
-        return Type.ENOENT;
+        return EntityType.ENOENT;
     }
 
     @Override
     public boolean hasAccess(final AccessMode... modes)
     {
         throw new IllegalStateException();
+    }
+
+    @Override
+    public InputStream getInputStream()
+        throws NoSuchFileException
+    {
+        throw new NoSuchFileException(name);
     }
 }

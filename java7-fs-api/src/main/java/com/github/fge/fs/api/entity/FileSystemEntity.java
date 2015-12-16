@@ -1,33 +1,18 @@
 package com.github.fge.fs.api.entity;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.AccessMode;
-import java.nio.file.Path;
 
-public abstract class FileSystemEntity
+public interface FileSystemEntity
 {
-    protected final String name;
+    EntityType getType();
 
-    protected FileSystemEntity(final Path path)
-    {
-        name = path.toAbsolutePath().toString();
-    }
+    boolean hasAccess(AccessMode... modes);
 
-    public abstract Type getType();
-
-    public abstract boolean hasAccess(AccessMode... modes);
-
-    public enum Type {
-        REGULAR_FILE,
-        DIRECTORY,
-        SYMLINK,
-        OTHER,
-        ENOENT,
-        ;
-    }
+    InputStream getInputStream()
+        throws IOException;
 
     @Override
-    public String toString()
-    {
-        return name;
-    }
+    String toString();
 }

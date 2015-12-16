@@ -1,36 +1,22 @@
 package com.github.fge.fs.dropbox.entity;
 
+import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
-import com.github.fge.fs.api.entity.FileSystemEntity;
+import com.github.fge.fs.api.entity.AbstractFileSystemEntity;
 
-import java.nio.file.AccessMode;
 import java.nio.file.Path;
 
-public final class DropboxFileSystemEntity
-    extends FileSystemEntity
+public abstract class DropboxFileSystemEntity
+    extends AbstractFileSystemEntity
 {
-    private final DbxEntry entry;
+    protected final DbxClient dbxClient;
+    protected final DbxEntry entry;
 
-    public DropboxFileSystemEntity(final Path path, final DbxEntry entry)
+    protected DropboxFileSystemEntity(final Path path,
+        final DbxClient dbxClient, final DbxEntry entry)
     {
         super(path);
+        this.dbxClient = dbxClient;
         this.entry = entry;
-    }
-
-    @Override
-    public Type getType()
-    {
-        if (entry.isFile())
-            return Type.REGULAR_FILE;
-        if (entry.isFolder())
-            return Type.DIRECTORY;
-        // TODO: nothing else supposedly supported for Dropbox here, so...
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean hasAccess(final AccessMode... modes)
-    {
-        return true;
     }
 }
