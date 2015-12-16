@@ -3,6 +3,7 @@ package com.github.fge.fs.dropbox.driver;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWriteMode;
+import com.github.fge.fs.api.driver.FileSystemEntity;
 import com.github.fge.fs.api.driver.FileSystemIoDriver;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -32,7 +34,18 @@ public final class DropboxFileSystemIoDriver
         final Set<OpenOption> options)
         throws IOException
     {
+        final FileSystemEntity entity = entityProvider.getEntity(path);
         final String name = path.toAbsolutePath().toString();
+
+        switch (entity.getType()) {
+            case ENOENT:
+                throw new NoSuchFileException(name);
+            case REGULAR_FILE:
+                break;
+            default:
+                throw new IOException(name + " is not a regular file");
+        }
+
         final DbxClient.Downloader downloader;
         try {
             downloader = dbxClient.startGetFile(name, null);
@@ -47,13 +60,23 @@ public final class DropboxFileSystemIoDriver
         final Set<OpenOption> options)
         throws IOException
     {
+        final FileSystemEntity entity = entityProvider.getEntity(path);
         final String name = path.toAbsolutePath().toString();
-        final boolean createNew = options
-            .contains(StandardOpenOption.CREATE_NEW);
+
+        switch (entity.getType()) {
+            case ENOENT:
+                if (!options.contains(StandardOpenOption.CREATE))
+                    throw new NoSuchFileException(name);
+                break;
+            case REGULAR_FILE:
+                if (options.contains(StandardOpenOption.CREATE_NEW))
+                    throw new FileAlreadyExistsException(name);
+                break;
+            default:
+                throw new IOException(name + " is not a regular file");
+        }
 
         try {
-            if (createNew && dbxClient.getMetadata(name) != null)
-                throw new FileAlreadyExistsException(name);
             final DbxClient.Uploader uploader
                 = dbxClient.startUploadFile(name, DbxWriteMode.force(), -1);
             return new DropboxOutputStream(uploader);
@@ -67,7 +90,12 @@ public final class DropboxFileSystemIoDriver
     public void createDirectory(final Path path)
         throws IOException
     {
+        final FileSystemEntity entity = entityProvider.getEntity(path);
         final String name = path.toAbsolutePath().toString();
+
+        if (entity.getType() != FileSystemEntity.Type.ENOENT)
+            throw new FileAlreadyExistsException(name);
+
         try {
             dbxClient.createFolder(name);
         } catch (DbxException e) {
@@ -79,9 +107,19 @@ public final class DropboxFileSystemIoDriver
     public void delete(final Path path)
         throws IOException
     {
+        final FileSystemEntity entity = entityProvider.getEntity(path);
         final String name = path.toAbsolutePath().toString();
+
+        switch (entity.getType()) {
+            case ENOENT:
+                throw new NoSuchFileException(name);
+            case DIRECTORY:
+                // TODO: check for non empty directory
+                break;
+            case REGULAR_FILE:
+                break;
+        }
         try {
-            // TODO: check for directory; this API command would delete it
             dbxClient.delete(name);
         } catch (DbxException e) {
             throw new IOException(e);
@@ -93,22 +131,34 @@ public final class DropboxFileSystemIoDriver
         final Set<CopyOption> options)
         throws IOException
     {
+        final FileSystemEntity srcEntity = entityProvider.getEntity(source);
         final String srcname = source.toAbsolutePath().toString();
+
+        switch (srcEntity.getType()) {
+            case ENOENT:
+                throw new NoSuchFileException(srcname);
+            case DIRECTORY:
+                // TODO: check for non empty directory
+                break;
+            case REGULAR_FILE:
+                break;
+        }
+
+        final FileSystemEntity dstEntity = entityProvider.getEntity(target);
         final String dstname = target.toAbsolutePath().toString();
 
-        if (options.contains(StandardCopyOption.REPLACE_EXISTING)) {
-            // TODO: that should be the code for delete
-            // TODO: check that the destination is a file or empty dir
-            try {
-                if (dbxClient.getMetadata(dstname) != null)
-                    dbxClient.delete(dstname);
-            } catch (DbxException e) {
-                throw new IOException(e);
-            }
+        switch (dstEntity.getType()) {
+            case ENOENT:
+                break;
+            case DIRECTORY:
+                // TODO: check for non empty directory
+                // fall through
+            case REGULAR_FILE:
+                if (!options.contains(StandardCopyOption.REPLACE_EXISTING))
+                    throw new FileAlreadyExistsException(dstname);
         }
 
         try {
-            // TODO: check that src is a file or empty dir
             dbxClient.copy(srcname, dstname);
         } catch (DbxException e) {
             throw new IOException(e);
@@ -120,8 +170,32 @@ public final class DropboxFileSystemIoDriver
         final Set<CopyOption> options)
         throws IOException
     {
+        final FileSystemEntity srcEntity = entityProvider.getEntity(source);
         final String srcname = source.toAbsolutePath().toString();
+
+        switch (srcEntity.getType()) {
+            case ENOENT:
+                throw new NoSuchFileException(srcname);
+            case DIRECTORY:
+                // TODO: check for non empty directory
+                break;
+            case REGULAR_FILE:
+                break;
+        }
+
+        final FileSystemEntity dstEntity = entityProvider.getEntity(target);
         final String dstname = target.toAbsolutePath().toString();
+
+        switch (dstEntity.getType()) {
+            case ENOENT:
+                break;
+            case DIRECTORY:
+                // TODO: check for non empty directory
+                // fall through
+            case REGULAR_FILE:
+                if (!options.contains(StandardCopyOption.REPLACE_EXISTING))
+                    throw new FileAlreadyExistsException(dstname);
+        }
 
         try {
             dbxClient.move(srcname, dstname);
