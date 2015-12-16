@@ -30,6 +30,7 @@ public class DefaultFileSystemOptionsChecker
 
         DEFAULT_WRITE_OPTIONS = new HashSet<>(set);
     }
+
     private static final Set<CopyOption> DEFAULT_COPY_OPTIONS;
 
     static {
@@ -113,7 +114,8 @@ public class DefaultFileSystemOptionsChecker
             set.add(option);
         }
 
-        set.addAll(DEFAULT_READ_OPTIONS);
+        if (set.isEmpty())
+            set.addAll(DEFAULT_READ_OPTIONS);
 
         return set;
     }
@@ -130,7 +132,8 @@ public class DefaultFileSystemOptionsChecker
             set.add(option);
         }
 
-        set.addAll(DEFAULT_WRITE_OPTIONS);
+        if (set.isEmpty())
+            set.addAll(DEFAULT_WRITE_OPTIONS);
 
         return set;
     }
@@ -147,7 +150,8 @@ public class DefaultFileSystemOptionsChecker
             set.add(option);
         }
 
-        set.addAll(DEFAULT_COPY_OPTIONS);
+        if (set.isEmpty())
+            set.addAll(DEFAULT_COPY_OPTIONS);
 
         return set;
     }
@@ -167,7 +171,8 @@ public class DefaultFileSystemOptionsChecker
             set.add(openOption);
         }
 
-        set.addAll(DEFAULT_READ_OPTIONS);
+        if (set.isEmpty())
+            set.addAll(DEFAULT_READ_OPTIONS);
 
         return set;
     }
@@ -187,7 +192,8 @@ public class DefaultFileSystemOptionsChecker
             set.add(openOption);
         }
 
-        set.addAll(DEFAULT_WRITE_OPTIONS);
+        if (set.isEmpty())
+            set.addAll(DEFAULT_WRITE_OPTIONS);
 
         return set;
     }
