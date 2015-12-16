@@ -1,5 +1,7 @@
 package com.github.fge.fs.api.driver;
 
+import com.github.fge.fs.api.entity.FileSystemEntityProvider;
+
 import java.io.OutputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.OpenOption;

@@ -5,8 +5,9 @@ import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWriteMode;
 import com.github.fge.fs.api.directory.DefaultDirectoryStream;
-import com.github.fge.fs.api.driver.FileSystemEntity;
+import com.github.fge.fs.api.entity.FileSystemEntity;
 import com.github.fge.fs.api.driver.FileSystemIoDriver;
+import com.github.fge.fs.dropbox.entity.DropboxFileSystemEntityProvider;
 
 import java.io.IOException;
 import java.io.InputStream;

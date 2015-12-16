@@ -1,11 +1,11 @@
-package com.github.fge.fs.dropbox.driver;
+package com.github.fge.fs.dropbox.entity;
 
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
-import com.github.fge.fs.api.driver.NoSuchFileSystemEntity;
-import com.github.fge.fs.api.driver.FileSystemEntity;
-import com.github.fge.fs.api.driver.FileSystemEntityProvider;
+import com.github.fge.fs.api.entity.NoSuchFileSystemEntity;
+import com.github.fge.fs.api.entity.FileSystemEntity;
+import com.github.fge.fs.api.entity.FileSystemEntityProvider;
 
 import java.io.IOException;
 import java.nio.file.Path;

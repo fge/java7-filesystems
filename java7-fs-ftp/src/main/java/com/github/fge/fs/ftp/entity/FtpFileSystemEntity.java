@@ -1,6 +1,6 @@
-package com.github.fge.fs.ftp.driver;
+package com.github.fge.fs.ftp.entity;
 
-import com.github.fge.fs.api.driver.FileSystemEntity;
+import com.github.fge.fs.api.entity.FileSystemEntity;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.nio.file.AccessMode;

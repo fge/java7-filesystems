@@ -1,4 +1,4 @@
-package com.github.fge.fs.api.driver;
+package com.github.fge.fs.api.entity;
 
 import java.nio.file.AccessMode;
 import java.nio.file.Path;

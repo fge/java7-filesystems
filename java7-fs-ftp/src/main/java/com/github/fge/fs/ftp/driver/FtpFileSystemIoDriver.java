@@ -1,9 +1,10 @@
 package com.github.fge.fs.ftp.driver;
 
 import com.github.fge.fs.api.directory.DefaultDirectoryStream;
-import com.github.fge.fs.api.driver.FileSystemEntity;
+import com.github.fge.fs.api.entity.FileSystemEntity;
 import com.github.fge.fs.api.driver.ReadOnlyFileSystemIoDriver;
 import com.github.fge.fs.ftp.directory.FtpDirectorySpliterator;
+import com.github.fge.fs.ftp.entity.FtpFileSystemEntityProvider;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPListParseEngine;
 

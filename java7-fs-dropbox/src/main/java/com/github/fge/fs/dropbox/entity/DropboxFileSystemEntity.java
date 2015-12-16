@@ -1,7 +1,7 @@
-package com.github.fge.fs.dropbox.driver;
+package com.github.fge.fs.dropbox.entity;
 
 import com.dropbox.core.DbxEntry;
-import com.github.fge.fs.api.driver.FileSystemEntity;
+import com.github.fge.fs.api.entity.FileSystemEntity;
 
 import java.nio.file.AccessMode;
 import java.nio.file.Path;

@@ -1,5 +1,8 @@
 package com.github.fge.fs.api.driver;
 
+import com.github.fge.fs.api.entity.FileSystemEntity;
+import com.github.fge.fs.api.entity.FileSystemEntityProvider;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

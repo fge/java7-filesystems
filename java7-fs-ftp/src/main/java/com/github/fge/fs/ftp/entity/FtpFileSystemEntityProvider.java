@@ -1,8 +1,8 @@
-package com.github.fge.fs.ftp.driver;
+package com.github.fge.fs.ftp.entity;
 
-import com.github.fge.fs.api.driver.NoSuchFileSystemEntity;
-import com.github.fge.fs.api.driver.FileSystemEntity;
-import com.github.fge.fs.api.driver.FileSystemEntityProvider;
+import com.github.fge.fs.api.entity.NoSuchFileSystemEntity;
+import com.github.fge.fs.api.entity.FileSystemEntity;
+import com.github.fge.fs.api.entity.FileSystemEntityProvider;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
