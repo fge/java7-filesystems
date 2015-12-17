@@ -1,0 +1,5 @@
+dependencies {
+    compile project(":java7-fs-api");
+    compile(group: "com.amazonaws", name: "aws-java-sdk-s3",
+            version: "1.10.41");
+}

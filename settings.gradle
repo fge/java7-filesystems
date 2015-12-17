@@ -1,3 +1,4 @@
 include "java7-fs-api";
 include "java7-fs-ftp";
 include "java7-fs-dropbox";
+include "java7-fs-amazon-s3";
