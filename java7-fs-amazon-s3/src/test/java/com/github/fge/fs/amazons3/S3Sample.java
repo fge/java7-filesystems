@@ -19,12 +19,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public final class S3Sample
 {
@@ -83,16 +79,21 @@ public final class S3Sample
              * like content-type and content-encoding, plus additional metadata
              * specific to your applications.
              */
+
+            /*
+             * Beware not to include a / on the key name: this will create a
+             * directory with no name at the root...
+             */
 //            System.out.println("Uploading a new object to S3 from a file\n");
 //            s3.putObject(new PutObjectRequest(bucketName, key, createSampleFile()));
-            final Path path = Paths.get("build.gradle");
-
-            try (
-                final OutputStream out = new AmazonS3OutputStream(s3,
-                    bucketName, "/pwet");
-            ) {
-                Files.copy(path, out);
-            }
+//            final Path path = Paths.get("build.gradle");
+//
+//            try (
+//                final OutputStream out = new AmazonS3OutputStream(s3,
+//                    bucketName, "/pwet");
+//            ) {
+//                Files.copy(path, out);
+//            }
 
             /*
              * Download an object - When you download an object, you get all of
