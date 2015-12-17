@@ -33,8 +33,7 @@ public final class AmazonS3BasicFileAttributes
     @Override
     public long size()
     {
-        return metadata.getContentEncoding() != null ? 0
-            : metadata.getContentLength();
+        return metadata.getInstanceLength();
     }
 
     @Override
