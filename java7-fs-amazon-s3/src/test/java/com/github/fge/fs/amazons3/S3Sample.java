@@ -9,10 +9,8 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import java.io.BufferedReader;
@@ -21,8 +19,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class S3Sample
 {
@@ -83,6 +85,14 @@ public final class S3Sample
              */
 //            System.out.println("Uploading a new object to S3 from a file\n");
 //            s3.putObject(new PutObjectRequest(bucketName, key, createSampleFile()));
+            final Path path = Paths.get("build.gradle");
+
+            try (
+                final OutputStream out = new AmazonS3OutputStream(s3,
+                    bucketName, "/pwet");
+            ) {
+                Files.copy(path, out);
+            }
 
             /*
              * Download an object - When you download an object, you get all of
@@ -96,9 +106,9 @@ public final class S3Sample
              * conditional downloading of objects based on modification times,
              * ETags, and selectively downloading a range of an object.
              */
-            System.out.println("Downloading an object");
-            S3Object object = s3.getObject(new GetObjectRequest(bucketName, key));
-            System.out.println("Content-Type: "  + object.getObjectMetadata().getContentType());
+//            System.out.println("Downloading an object");
+//            S3Object object = s3.getObject(new GetObjectRequest(bucketName, key));
+//            System.out.println("Content-Type: "  + object.getObjectMetadata().getContentType());
 //            displayTextInputStream(object.getObjectContent());
 
             /*
@@ -111,8 +121,11 @@ public final class S3Sample
              */
             System.out.println("Listing objects");
             final ListObjectsRequest request = new ListObjectsRequest()
-                .withBucketName(bucketName);
+                .withBucketName(bucketName)
+                .withPrefix("/")
+                .withDelimiter("/");
             ObjectListing objectListing = s3.listObjects(request);
+            System.out.println(objectListing.getCommonPrefixes());
             for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
                 System.out.println(" - " + objectSummary.getKey() + "  " +
                     "(size = " + objectSummary.getSize() + ")");
