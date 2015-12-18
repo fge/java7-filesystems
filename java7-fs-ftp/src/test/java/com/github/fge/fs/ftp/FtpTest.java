@@ -1,10 +1,8 @@
 package com.github.fge.fs.ftp;
 
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public final class FtpTest
 {
@@ -21,9 +19,7 @@ public final class FtpTest
         if (!client.login(user, passwd))
             throw new IllegalArgumentException();
 
-        Arrays.stream(client.listFiles("x"))
-            .map(FTPFile::getName)
-            .forEach(System.out::println);
+        System.out.println(client.list("soft"));
 
         System.out.println(client.logout());
     }

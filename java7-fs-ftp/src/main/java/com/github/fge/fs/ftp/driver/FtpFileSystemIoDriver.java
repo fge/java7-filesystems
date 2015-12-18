@@ -33,7 +33,7 @@ public final class FtpFileSystemIoDriver
         throws IOException
     {
         // TODO: check
-        final String name = path.toAbsolutePath().toString();
+        final String name = path.toAbsolutePath().toString().substring(1);
         final InputStream stream = client.retrieveFileStream(name);
         if (stream == null)
             throw new IOException("FTP error :" + client.getReplyCode());
@@ -46,7 +46,7 @@ public final class FtpFileSystemIoDriver
         throws IOException
     {
         // TODO: check
-        final String name = dir.toAbsolutePath().toString();
+        final String name = dir.toAbsolutePath().toString().substring(1);
         final FTPListParseEngine engine = client.initiateListParsing(name);
         final Spliterator<Path> spliterator
             = new FtpDirectorySpliterator(dir, engine);
