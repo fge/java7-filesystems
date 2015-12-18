@@ -1,5 +1,7 @@
 package com.github.fge.fs.api.filestore;
 
+import com.github.fge.fs.api.attr.factory.FileAttributeViewFactory;
+
 /**
  * Basic implementation of a read only {@link AbstractFileStore}
  *
@@ -9,14 +11,16 @@ package com.github.fge.fs.api.filestore;
 public abstract class AbstractReadOnlyFileStore
     extends AbstractFileStore
 {
-    protected AbstractReadOnlyFileStore(final String name, final String type)
+    protected AbstractReadOnlyFileStore(final String name, final String type,
+        final FileAttributeViewFactory fileAttributeViewFactory)
     {
-        super(name, type);
+        super(name, type, fileAttributeViewFactory);
     }
 
-    protected AbstractReadOnlyFileStore(final String name)
+    protected AbstractReadOnlyFileStore(final String name,
+        final FileAttributeViewFactory fileAttributeViewFactory)
     {
-        super(name);
+        super(name, fileAttributeViewFactory);
     }
 
     @Override

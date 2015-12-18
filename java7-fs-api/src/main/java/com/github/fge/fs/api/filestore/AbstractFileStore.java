@@ -1,5 +1,7 @@
 package com.github.fge.fs.api.filestore;
 
+import com.github.fge.fs.api.attr.factory.FileAttributeViewFactory;
+
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.attribute.FileAttributeView;
@@ -24,23 +26,25 @@ import java.nio.file.attribute.FileStoreAttributeView;
  *     <li>{@link #getUsableSpace()}.</li>
  * </ul>
  */
-// TODO: file attribute views; recall, we have one filestore per filesystem
 public abstract class AbstractFileStore
     extends FileStore
 {
-    // TODO: make those two private?
     protected final String name;
     protected final String type;
+    protected final FileAttributeViewFactory fileAttributeViewFactory;
 
-    protected AbstractFileStore(final String name, final String type)
+    protected AbstractFileStore(final String name, final String type,
+        final FileAttributeViewFactory fileAttributeViewFactory)
     {
         this.name = name;
         this.type = type;
+        this.fileAttributeViewFactory = fileAttributeViewFactory;
     }
 
-    protected AbstractFileStore(final String name)
+    protected AbstractFileStore(final String name,
+        final FileAttributeViewFactory fileAttributeViewFactory)
     {
-        this(name, name);
+        this(name, name, fileAttributeViewFactory);
     }
 
     @Override
@@ -87,15 +91,13 @@ public abstract class AbstractFileStore
     public boolean supportsFileAttributeView(
         final Class<? extends FileAttributeView> type)
     {
-        // TODO
-        return false;
+        return fileAttributeViewFactory.getProviderForClass(type) != null;
     }
 
     @Override
     public boolean supportsFileAttributeView(final String name)
     {
-        // TODO
-        return false;
+        return fileAttributeViewFactory.getProviderForName(name) != null;
     }
 
     @Override
