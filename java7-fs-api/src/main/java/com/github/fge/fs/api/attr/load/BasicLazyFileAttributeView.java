@@ -10,7 +10,7 @@ import java.nio.file.attribute.FileTime;
 
 public final class BasicLazyFileAttributeView
     extends LazyFileAttributeView<BasicFileAttributeView>
-    implements BasicFileAttributeViewBase, FileAttributesProvider<BasicFileAttributes>
+    implements BasicFileAttributeViewBase, FileAttributesReader<BasicFileAttributes>
 
 {
     public BasicLazyFileAttributeView(
