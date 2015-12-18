@@ -7,18 +7,17 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.util.concurrent.ExecutorService;
 
 public final class BasicLazyFileAttributeView
     extends LazyFileAttributeView<BasicFileAttributeView>
     implements BasicFileAttributeViewBase, FileAttributesProvider<BasicFileAttributes>
 
 {
-    public BasicLazyFileAttributeView(final ExecutorService executor,
+    public BasicLazyFileAttributeView(
         final FileAttributeViewLoader<BasicFileAttributeView> loader,
         final Path path)
     {
-        super(executor, loader, path);
+        super(loader, path);
     }
 
     @Override
