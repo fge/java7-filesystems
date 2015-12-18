@@ -6,6 +6,7 @@ import com.github.fge.fs.api.filestore.AbstractFileStore;
 import com.github.fge.fs.api.path.PathContext;
 import com.github.fge.fs.api.path.elements.PathElements;
 import com.github.fge.fs.api.path.elements.PathElementsFactory;
+import com.github.fge.fs.api.provider.AbstractFileSystemProvider;
 
 import java.io.IOException;
 import java.nio.file.ClosedFileSystemException;
@@ -17,6 +18,7 @@ import java.nio.file.WatchService;
 import java.nio.file.attribute.UserPrincipalLookupService;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -32,16 +34,19 @@ public abstract class AbstractFileSystem
 {
     protected final AtomicBoolean open = new AtomicBoolean(true);
 
+    protected final AbstractFileSystemProvider provider;
     protected final AbstractFileStore fileStore;
     protected final PathContext pathContext;
     protected final FileSystemDriver driver;
 
-    protected AbstractFileSystem(final AbstractFileStore store,
-        final PathContext pathContext, final FileSystemDriver driver)
+    protected AbstractFileSystem(final AbstractFileSystemProvider provider,
+        final AbstractFileStore fileStore, final PathContext pathContext,
+        final FileSystemDriver driver)
     {
-        fileStore = store;
-        this.pathContext = pathContext;
-        this.driver = driver;
+        this.provider = Objects.requireNonNull(provider);
+        this.fileStore = Objects.requireNonNull(fileStore);
+        this.pathContext = Objects.requireNonNull(pathContext);
+        this.driver = Objects.requireNonNull(driver);
     }
 
     public abstract Path buildPath(final PathElements elements);
@@ -49,8 +54,7 @@ public abstract class AbstractFileSystem
     @Override
     public FileSystemProvider provider()
     {
-        // TODO
-        return null;
+        return provider;
     }
 
     public final FileSystemDriver getDriver()
