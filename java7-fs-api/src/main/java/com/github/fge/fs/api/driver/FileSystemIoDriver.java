@@ -1,30 +1,17 @@
 package com.github.fge.fs.api.driver;
 
-import com.github.fge.fs.api.entity.EntityType;
-import com.github.fge.fs.api.entity.FileSystemEntity;
-import com.github.fge.fs.api.entity.FileSystemEntityProvider;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.AccessMode;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Set;
 
 public abstract class FileSystemIoDriver
 {
-    protected final FileSystemEntityProvider entityProvider;
-
-    protected FileSystemIoDriver(final FileSystemEntityProvider provider)
-    {
-        entityProvider = provider;
-    }
-
     public abstract InputStream getInputStream(Path path,
         Set<OpenOption> options)
         throws IOException;
@@ -51,18 +38,8 @@ public abstract class FileSystemIoDriver
         delete(source);
     }
 
-    public void checkAccess(final Path path, final AccessMode... modes)
-        throws IOException
-    {
-        final FileSystemEntity entity = entityProvider.getEntity(path);
-        final String name = entity.toString();
-
-        if (entity.getType() == EntityType.ENOENT)
-            throw new NoSuchFileException(name);
-
-        if (!entity.hasAccess(modes))
-            throw new AccessDeniedException(name);
-    }
+    public abstract void checkAccess(Path path, AccessMode... modes)
+        throws IOException;
 
     public abstract DirectoryStream<Path> getDirectoryStream(Path dir,
         DirectoryStream.Filter<? super Path> filter)

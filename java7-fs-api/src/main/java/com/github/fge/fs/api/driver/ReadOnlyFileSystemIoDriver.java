@@ -1,7 +1,5 @@
 package com.github.fge.fs.api.driver;
 
-import com.github.fge.fs.api.entity.FileSystemEntityProvider;
-
 import java.io.OutputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.OpenOption;
@@ -12,12 +10,6 @@ import java.util.Set;
 public abstract class ReadOnlyFileSystemIoDriver
     extends FileSystemIoDriver
 {
-    protected ReadOnlyFileSystemIoDriver(
-        final FileSystemEntityProvider provider)
-    {
-        super(provider);
-    }
-
     @Override
     public final OutputStream getOutputStream(final Path path,
         final Set<OpenOption> options)

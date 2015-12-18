@@ -277,7 +277,7 @@ public abstract class AbstractFileSystemProvider
     }
 
     @VisibleForTesting
-    protected FileSystemDriver getDriver(final Path path)
+    protected static FileSystemDriver getDriver(final Path path)
     {
         final AbstractFileSystem fs = (AbstractFileSystem) path.getFileSystem();
         return fs.getDriver();

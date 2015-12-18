@@ -1,18 +1,15 @@
 package com.github.fge.fs.ftp.driver;
 
 import com.github.fge.fs.api.directory.DefaultDirectoryStream;
-import com.github.fge.fs.api.entity.FileSystemEntity;
 import com.github.fge.fs.api.driver.ReadOnlyFileSystemIoDriver;
 import com.github.fge.fs.ftp.directory.FtpDirectorySpliterator;
-import com.github.fge.fs.ftp.entity.FtpFileSystemEntityProvider;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPListParseEngine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.AccessMode;
 import java.nio.file.DirectoryStream;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.NotDirectoryException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Set;
@@ -27,7 +24,6 @@ public final class FtpFileSystemIoDriver
 
     public FtpFileSystemIoDriver(final FTPClient ftpClient)
     {
-        super(new FtpFileSystemEntityProvider(ftpClient));
         this.ftpClient = ftpClient;
     }
 
@@ -36,8 +32,9 @@ public final class FtpFileSystemIoDriver
         final Set<OpenOption> options)
         throws IOException
     {
-        final FileSystemEntity entity = entityProvider.getEntity(path);
-        return entity.getInputStream();
+        // TODO: check
+        final String name = path.toAbsolutePath().toString();
+        return ftpClient.retrieveFileStream(name);
     }
 
     @Override
@@ -45,22 +42,19 @@ public final class FtpFileSystemIoDriver
         final DirectoryStream.Filter<? super Path> filter)
         throws IOException
     {
-        final FileSystemEntity entity = entityProvider.getEntity(dir);
-        final String name = entity.toString();
-
-        switch (entity.getType()) {
-            case ENOENT:
-                throw new NoSuchFileException(name);
-            case DIRECTORY:
-                break;
-            default:
-                throw new NotDirectoryException(name);
-        }
-
+        // TODO: check
+        final String name = dir.toAbsolutePath().toString();
         final FTPListParseEngine engine = ftpClient.initiateListParsing(name);
         final Spliterator<Path> spliterator
             = new FtpDirectorySpliterator(dir, engine);
         final Stream<Path> stream = StreamSupport.stream(spliterator, true);
         return new DefaultDirectoryStream(stream, filter);
+    }
+
+    @Override
+    public void checkAccess(final Path path, final AccessMode... modes)
+        throws IOException
+    {
+        // TODO
     }
 }
