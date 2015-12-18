@@ -1,5 +1,6 @@
 package com.github.fge.fs.api.fs;
 
+import com.github.fge.fs.api.attr.factory.FileAttributeViewFactory;
 import com.github.fge.fs.api.driver.FileSystemDriver;
 import com.github.fge.fs.api.filestore.AbstractFileStore;
 import com.github.fge.fs.api.path.PathContext;
@@ -56,6 +57,12 @@ public abstract class AbstractFileSystem
     {
         ensureOpen();
         return driver;
+    }
+
+    public final FileAttributeViewFactory getFileAttributeViewFactory()
+    {
+        ensureOpen();
+        return fileStore.getFileAttributeViewFactory();
     }
 
     @Override

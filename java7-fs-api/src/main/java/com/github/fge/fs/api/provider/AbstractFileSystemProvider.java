@@ -1,5 +1,10 @@
 package com.github.fge.fs.api.provider;
 
+import com.github.fge.fs.api.attr.StandardAttributeViewNames;
+import com.github.fge.fs.api.attr.byname.NameDispatcher;
+import com.github.fge.fs.api.attr.factory.AttributeViewProvider;
+import com.github.fge.fs.api.attr.factory.AttributesProvider;
+import com.github.fge.fs.api.attr.factory.FileAttributeViewFactory;
 import com.github.fge.fs.api.driver.FileSystemDriver;
 import com.github.fge.fs.api.driver.FileSystemIoDriver;
 import com.github.fge.fs.api.driver.FileSystemOptionsChecker;
@@ -23,8 +28,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.spi.FileSystemProvider;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Default abstract implementation of a {@link FileSystemProvider}
@@ -36,6 +44,9 @@ import java.util.Set;
 public abstract class AbstractFileSystemProvider
     extends FileSystemProvider
 {
+    private static final String ALL_ATTRS = "*";
+    private static final Pattern COMMA = Pattern.compile(",");
+
     @Override
     public String getScheme()
     {
@@ -243,8 +254,14 @@ public abstract class AbstractFileSystemProvider
     public <V extends FileAttributeView> V getFileAttributeView(final Path path,
         final Class<V> type, final LinkOption... options)
     {
-        // TODO
-        return null;
+        final FileAttributeViewFactory factory
+            = getFileAttributeViewFactory(path);
+
+        final AttributeViewProvider<V> provider
+            = factory.getProviderForClass(type);
+        if (provider == null)
+            throw new UnsupportedOperationException();
+        return provider.getView(path);
     }
 
     @Override
@@ -252,8 +269,16 @@ public abstract class AbstractFileSystemProvider
         final Class<A> type, final LinkOption... options)
         throws IOException
     {
-        // TODO
-        return null;
+        final FileAttributeViewFactory factory
+            = getFileAttributeViewFactory(path);
+
+        final AttributesProvider<A> provider
+            = factory.getAttributesProvider(type);
+
+        if (provider == null)
+            throw new UnsupportedOperationException();
+
+        return provider.getAttributes(path);
     }
 
     @Override
@@ -262,8 +287,38 @@ public abstract class AbstractFileSystemProvider
         final LinkOption... options)
         throws IOException
     {
-        // TODO
-        return null;
+        final String name;
+        final String attrs;
+        final int index = attributes.indexOf(':');
+
+        if (index == -1) {
+            name = StandardAttributeViewNames.BASIC;
+            attrs = attributes;
+        } else {
+            name = attributes.substring(0, index);
+            attrs = attributes.substring(index + 1);
+        }
+
+        final FileAttributeViewFactory factory
+            = getFileAttributeViewFactory(path);
+
+        final AttributeViewProvider<?> provider
+            = factory.getProviderForName(name);
+
+        if (provider == null)
+            throw new UnsupportedOperationException();
+
+        final NameDispatcher dispatcher = provider.getNameDispatcher(path);
+
+        if (ALL_ATTRS.equals(attributes))
+            return dispatcher.readAllAttributes();
+
+        final Map<String, Object> map = new HashMap<>();
+
+        for (final String attr: COMMA.split(attrs))
+            map.put(attr, dispatcher.readByName(attr));
+
+        return Collections.unmodifiableMap(map);
     }
 
     @Override
@@ -281,5 +336,12 @@ public abstract class AbstractFileSystemProvider
     {
         final AbstractFileSystem fs = (AbstractFileSystem) path.getFileSystem();
         return fs.getDriver();
+    }
+
+    private FileAttributeViewFactory getFileAttributeViewFactory(
+        final Path path)
+    {
+        return ((AbstractFileSystem) path.getFileSystem())
+            .getFileAttributeViewFactory();
     }
 }

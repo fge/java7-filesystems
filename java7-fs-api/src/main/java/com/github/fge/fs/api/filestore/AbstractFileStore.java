@@ -47,6 +47,11 @@ public abstract class AbstractFileStore
         this(name, name, fileAttributeViewFactory);
     }
 
+    public final FileAttributeViewFactory getFileAttributeViewFactory()
+    {
+        return fileAttributeViewFactory;
+    }
+
     @Override
     public String name()
     {
