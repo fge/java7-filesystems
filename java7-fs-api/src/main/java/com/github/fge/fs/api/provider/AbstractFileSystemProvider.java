@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
  * href="https://github.com/fge/java7-filesystems">project page</a> for the
  * enforced limitations of this abstract implementation.</p>
  */
+@SuppressWarnings("CastToConcreteClass")
 public abstract class AbstractFileSystemProvider
     extends FileSystemProvider
 {
@@ -147,7 +148,7 @@ public abstract class AbstractFileSystemProvider
     }
 
     @VisibleForTesting
-    protected void copySameFs(final Path source, final Path target,
+    protected static void copySameFs(final Path source, final Path target,
         final CopyOption... options)
         throws IOException
     {
@@ -159,7 +160,7 @@ public abstract class AbstractFileSystemProvider
     }
 
     @VisibleForTesting
-    protected void copyDifferentFs(final Path source, final Path target,
+    protected static void copyDifferentFs(final Path source, final Path target,
         final CopyOption... options)
         throws IOException
     {
@@ -202,7 +203,7 @@ public abstract class AbstractFileSystemProvider
             moveDifferentFs(source, target, options);
     }
 
-    private void moveSameFs(final Path source, final Path target,
+    private static void moveSameFs(final Path source, final Path target,
         final CopyOption... options)
         throws IOException
     {
@@ -254,13 +255,14 @@ public abstract class AbstractFileSystemProvider
     public <V extends FileAttributeView> V getFileAttributeView(final Path path,
         final Class<V> type, final LinkOption... options)
     {
-        final FileAttributeViewFactory factory
-            = getFileAttributeViewFactory(path);
+        final FileAttributeViewFactory factory = getAttributeFactory(path);
 
         final AttributeViewProvider<V> provider
             = factory.getProviderForClass(type);
+
         if (provider == null)
             throw new UnsupportedOperationException();
+
         return provider.getView(path);
     }
 
@@ -269,8 +271,7 @@ public abstract class AbstractFileSystemProvider
         final Class<A> type, final LinkOption... options)
         throws IOException
     {
-        final FileAttributeViewFactory factory
-            = getFileAttributeViewFactory(path);
+        final FileAttributeViewFactory factory = getAttributeFactory(path);
 
         final AttributesProvider<A> provider
             = factory.getAttributesProvider(type);
@@ -299,8 +300,7 @@ public abstract class AbstractFileSystemProvider
             attrs = attributes.substring(index + 1);
         }
 
-        final FileAttributeViewFactory factory
-            = getFileAttributeViewFactory(path);
+        final FileAttributeViewFactory factory = getAttributeFactory(path);
 
         final AttributeViewProvider<?> provider
             = factory.getProviderForName(name);
@@ -338,10 +338,9 @@ public abstract class AbstractFileSystemProvider
         return fs.getDriver();
     }
 
-    private FileAttributeViewFactory getFileAttributeViewFactory(
-        final Path path)
+    private static FileAttributeViewFactory getAttributeFactory(final Path path)
     {
         return ((AbstractFileSystem) path.getFileSystem())
-            .getFileAttributeViewFactory();
+            .getAttributeFactory();
     }
 }

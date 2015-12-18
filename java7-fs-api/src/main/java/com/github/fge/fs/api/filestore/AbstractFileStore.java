@@ -31,25 +31,25 @@ public abstract class AbstractFileStore
 {
     protected final String name;
     protected final String type;
-    protected final FileAttributeViewFactory fileAttributeViewFactory;
+    protected final FileAttributeViewFactory attributeFactory;
 
     protected AbstractFileStore(final String name, final String type,
-        final FileAttributeViewFactory fileAttributeViewFactory)
+        final FileAttributeViewFactory attributeFactory)
     {
         this.name = name;
         this.type = type;
-        this.fileAttributeViewFactory = fileAttributeViewFactory;
+        this.attributeFactory = attributeFactory;
     }
 
     protected AbstractFileStore(final String name,
-        final FileAttributeViewFactory fileAttributeViewFactory)
+        final FileAttributeViewFactory attributeFactory)
     {
-        this(name, name, fileAttributeViewFactory);
+        this(name, name, attributeFactory);
     }
 
-    public final FileAttributeViewFactory getFileAttributeViewFactory()
+    public final FileAttributeViewFactory getAttributeFactory()
     {
-        return fileAttributeViewFactory;
+        return attributeFactory;
     }
 
     @Override
@@ -67,7 +67,6 @@ public abstract class AbstractFileStore
     @Override
     public boolean isReadOnly()
     {
-        // TODO
         return false;
     }
 
@@ -93,27 +92,27 @@ public abstract class AbstractFileStore
     }
 
     @Override
-    public boolean supportsFileAttributeView(
+    public final boolean supportsFileAttributeView(
         final Class<? extends FileAttributeView> type)
     {
-        return fileAttributeViewFactory.getProviderForClass(type) != null;
+        return attributeFactory.getProviderForClass(type) != null;
     }
 
     @Override
-    public boolean supportsFileAttributeView(final String name)
+    public final boolean supportsFileAttributeView(final String name)
     {
-        return fileAttributeViewFactory.getProviderForName(name) != null;
+        return attributeFactory.getProviderForName(name) != null;
     }
 
     @Override
-    public <V extends FileStoreAttributeView> V getFileStoreAttributeView(
+    public final <V extends FileStoreAttributeView> V getFileStoreAttributeView(
         final Class<V> type)
     {
         return null;
     }
 
     @Override
-    public Object getAttribute(final String attribute)
+    public final Object getAttribute(final String attribute)
         throws IOException
     {
         throw new UnsupportedOperationException();

@@ -103,7 +103,7 @@ public class DefaultFileSystemOptionsChecker
     }
 
     @Override
-    public Set<OpenOption> getReadOptions(final OpenOption... options)
+    public final Set<OpenOption> getReadOptions(final OpenOption... options)
     {
         final Set<OpenOption> set = new HashSet<>();
 
@@ -121,7 +121,7 @@ public class DefaultFileSystemOptionsChecker
     }
 
     @Override
-    public Set<OpenOption> getWriteOptions(final OpenOption... options)
+    public final Set<OpenOption> getWriteOptions(final OpenOption... options)
     {
         final Set<OpenOption> set = new HashSet<>();
 
@@ -139,7 +139,7 @@ public class DefaultFileSystemOptionsChecker
     }
 
     @Override
-    public Set<CopyOption> getCopyOptions(final CopyOption... options)
+    public final Set<CopyOption> getCopyOptions(final CopyOption... options)
     {
         final Set<CopyOption> set = new HashSet<>(options.length);
 
@@ -157,7 +157,7 @@ public class DefaultFileSystemOptionsChecker
     }
 
     @Override
-    public Set<OpenOption> copyToReadOptions(final CopyOption... options)
+    public final Set<OpenOption> copyToReadOptions(final CopyOption... options)
     {
         final Set<OpenOption> set = new HashSet<>();
 
@@ -178,7 +178,7 @@ public class DefaultFileSystemOptionsChecker
     }
 
     @Override
-    public Set<OpenOption> copyToWriteOptions(final CopyOption... options)
+    public final Set<OpenOption> copyToWriteOptions(final CopyOption... options)
     {
         final Set<OpenOption> set = new HashSet<>();
 
