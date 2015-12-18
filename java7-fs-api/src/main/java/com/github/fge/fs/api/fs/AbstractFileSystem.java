@@ -1,5 +1,6 @@
 package com.github.fge.fs.api.fs;
 
+import com.github.fge.fs.api.driver.FileSystemDriver;
 import com.github.fge.fs.api.filestore.AbstractFileStore;
 import com.github.fge.fs.api.path.PathContext;
 import com.github.fge.fs.api.path.elements.PathElements;
@@ -32,12 +33,14 @@ public abstract class AbstractFileSystem
 
     protected final AbstractFileStore fileStore;
     protected final PathContext pathContext;
+    protected final FileSystemDriver driver;
 
     protected AbstractFileSystem(final AbstractFileStore store,
-        final PathContext pathContext)
+        final PathContext pathContext, final FileSystemDriver driver)
     {
         fileStore = store;
         this.pathContext = pathContext;
+        this.driver = driver;
     }
 
     public abstract Path buildPath(final PathElements elements);
@@ -47,6 +50,12 @@ public abstract class AbstractFileSystem
     {
         // TODO
         return null;
+    }
+
+    public final FileSystemDriver getDriver()
+    {
+        ensureOpen();
+        return driver;
     }
 
     @Override

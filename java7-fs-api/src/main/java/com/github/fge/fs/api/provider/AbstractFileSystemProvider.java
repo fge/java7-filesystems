@@ -3,6 +3,7 @@ package com.github.fge.fs.api.provider;
 import com.github.fge.fs.api.driver.FileSystemDriver;
 import com.github.fge.fs.api.driver.FileSystemIoDriver;
 import com.github.fge.fs.api.driver.FileSystemOptionsChecker;
+import com.github.fge.fs.api.fs.AbstractFileSystem;
 import com.github.fge.fs.api.internal.VisibleForTesting;
 
 import java.io.IOException;
@@ -11,7 +12,6 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.AccessMode;
-import java.nio.file.ClosedFileSystemException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore;
@@ -25,8 +25,6 @@ import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Default abstract implementation of a {@link FileSystemProvider}
@@ -38,31 +36,17 @@ import java.util.concurrent.ConcurrentMap;
 public abstract class AbstractFileSystemProvider
     extends FileSystemProvider
 {
-    protected final String scheme;
-
-    @VisibleForTesting
-    protected final ConcurrentMap<FileSystem, FileSystemDriver> fileSystems
-        = new ConcurrentHashMap<>();
-
-    protected AbstractFileSystemProvider(final String scheme)
-    {
-        this.scheme = scheme;
-    }
-
     @Override
     public String getScheme()
     {
-        return scheme;
+        // TODO
+        return null;
     }
 
     @Override
     public FileSystem newFileSystem(final URI uri, final Map<String, ?> env)
         throws IOException
     {
-        if (!uri.isAbsolute())
-            throw new IllegalArgumentException();
-        if (uri.isOpaque())
-            throw new IllegalArgumentException();
         // TODO
         return null;
     }
@@ -295,18 +279,7 @@ public abstract class AbstractFileSystemProvider
     @VisibleForTesting
     protected FileSystemDriver getDriver(final Path path)
     {
-        final FileSystem fs = path.getFileSystem();
-        if (!fs.isOpen())
-            throw new ClosedFileSystemException();
-        return getDriver(fs);
-    }
-
-    @VisibleForTesting
-    protected FileSystemDriver getDriver(final FileSystem fs)
-    {
-        final FileSystemDriver driver = fileSystems.get(fs);
-        if (driver == null)
-            throw new ClosedFileSystemException();
-        return driver;
+        final AbstractFileSystem fs = (AbstractFileSystem) path.getFileSystem();
+        return fs.getDriver();
     }
 }
