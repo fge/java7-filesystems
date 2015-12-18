@@ -21,6 +21,8 @@ import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystemAlreadyExistsException;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -31,6 +33,7 @@ import java.nio.file.spi.FileSystemProvider;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -45,29 +48,45 @@ import java.util.regex.Pattern;
 public abstract class AbstractFileSystemProvider
     extends FileSystemProvider
 {
+    private static final Pattern SLASH = Pattern.compile("/");
     private static final String ALL_ATTRS = "*";
     private static final Pattern COMMA = Pattern.compile(",");
 
-    @Override
-    public String getScheme()
+    private final Map<URI, AbstractFileSystem> fileSystems = new HashMap<>();
+
+    private final FileSystemFactory factory;
+
+    protected AbstractFileSystemProvider(final FileSystemFactory factory)
     {
-        // TODO
-        return null;
+        this.factory = factory;
     }
 
     @Override
-    public FileSystem newFileSystem(final URI uri, final Map<String, ?> env)
+    public final String getScheme()
+    {
+        return factory.getScheme();
+    }
+
+    @Override
+    public final FileSystem newFileSystem(final URI uri,
+        final Map<String, ?> env)
         throws IOException
     {
-        // TODO
-        return null;
+        synchronized (fileSystems) {
+            if (fileSystems.get(uri) != null)
+                throw new FileSystemAlreadyExistsException(uri.toString());
+            final AbstractFileSystem fs
+                = factory.createFileSystem(this, uri, env);
+            fileSystems.put(uri, fs);
+            return fs;
+        }
     }
 
     @Override
     public FileSystem getFileSystem(final URI uri)
     {
-        // TODO
-        return null;
+        return Optional.ofNullable(fileSystems.get(uri))
+            .orElseThrow(FileSystemNotFoundException::new);
     }
 
     @Override
