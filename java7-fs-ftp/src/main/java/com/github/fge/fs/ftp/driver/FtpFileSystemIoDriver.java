@@ -34,7 +34,10 @@ public final class FtpFileSystemIoDriver
     {
         // TODO: check
         final String name = path.toAbsolutePath().toString();
-        return ftpClient.retrieveFileStream(name);
+        final InputStream stream = ftpClient.retrieveFileStream(name);
+        if (stream == null)
+            throw new IOException("FTP error :" + ftpClient.getReplyCode());
+        return new FtpInputStream(ftpClient, stream);
     }
 
     @Override
