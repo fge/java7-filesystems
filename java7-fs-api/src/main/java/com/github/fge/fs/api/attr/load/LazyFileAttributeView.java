@@ -6,6 +6,8 @@ import java.nio.file.attribute.FileAttributeView;
 
 public abstract class LazyFileAttributeView<V extends FileAttributeView>
 {
+    protected V view = null;
+
     protected final FileAttributeViewLoader<V> loader;
     protected final Path path;
 
@@ -20,11 +22,13 @@ public abstract class LazyFileAttributeView<V extends FileAttributeView>
         throws IOException
     {
         try {
-            return loader.load(path);
+            if (view == null)
+                view = loader.load(path);
         } catch (IOException e) {
             throw e;
         } catch (Exception e) {
             throw new IOException(e);
         }
+        return view;
     }
 }
