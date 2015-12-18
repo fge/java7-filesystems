@@ -5,7 +5,7 @@ import com.github.fge.fs.api.filestore.AbstractReadOnlyFileStore;
 public final class FtpFileStore
     extends AbstractReadOnlyFileStore
 {
-    public FtpFileStore(final String name)
+    public FtpFileStore()
     {
         super("ftp");
     }
