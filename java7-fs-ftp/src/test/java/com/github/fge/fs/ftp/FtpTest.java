@@ -1,13 +1,10 @@
 package com.github.fge.fs.ftp;
 
-import com.github.fge.fs.ftp.driver.FtpInputStream;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Arrays;
 
 public final class FtpTest
 {
@@ -24,21 +21,9 @@ public final class FtpTest
         if (!client.login(user, passwd))
             throw new IllegalArgumentException();
 
-        final InputStream in = client.retrieveFileStream("config.xml");
-
-        if (in == null) {
-            System.err.println("Oops");
-            System.err.println(client.getReplyCode());
-            System.exit(1);
-        }
-
-        final Path path = Paths.get("/tmp/prout");
-
-        try (
-            final InputStream ftpin = new FtpInputStream(client, in);
-        ) {
-            Files.copy(ftpin, path);
-        }
+        Arrays.stream(client.listFiles("x"))
+            .map(FTPFile::getName)
+            .forEach(System.out::println);
 
         System.out.println(client.logout());
     }

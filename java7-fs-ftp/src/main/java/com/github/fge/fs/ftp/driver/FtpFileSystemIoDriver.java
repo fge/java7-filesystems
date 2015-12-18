@@ -20,11 +20,11 @@ import java.util.stream.StreamSupport;
 public final class FtpFileSystemIoDriver
     extends ReadOnlyFileSystemIoDriver
 {
-    private final FTPClient ftpClient;
+    private final FTPClient client;
 
-    public FtpFileSystemIoDriver(final FTPClient ftpClient)
+    public FtpFileSystemIoDriver(final FTPClient client)
     {
-        this.ftpClient = ftpClient;
+        this.client = client;
     }
 
     @Override
@@ -34,10 +34,10 @@ public final class FtpFileSystemIoDriver
     {
         // TODO: check
         final String name = path.toAbsolutePath().toString();
-        final InputStream stream = ftpClient.retrieveFileStream(name);
+        final InputStream stream = client.retrieveFileStream(name);
         if (stream == null)
-            throw new IOException("FTP error :" + ftpClient.getReplyCode());
-        return new FtpInputStream(ftpClient, stream);
+            throw new IOException("FTP error :" + client.getReplyCode());
+        return new FtpInputStream(client, stream);
     }
 
     @Override
@@ -47,7 +47,7 @@ public final class FtpFileSystemIoDriver
     {
         // TODO: check
         final String name = dir.toAbsolutePath().toString();
-        final FTPListParseEngine engine = ftpClient.initiateListParsing(name);
+        final FTPListParseEngine engine = client.initiateListParsing(name);
         final Spliterator<Path> spliterator
             = new FtpDirectorySpliterator(dir, engine);
         final Stream<Path> stream = StreamSupport.stream(spliterator, true);
