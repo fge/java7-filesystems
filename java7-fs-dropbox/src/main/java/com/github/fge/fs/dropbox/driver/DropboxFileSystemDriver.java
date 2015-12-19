@@ -27,4 +27,9 @@ public final class DropboxFileSystemDriver
     {
         return new DefaultFileSystemOptionsChecker();
     }
+
+    @Override
+    public void close()
+    {
+    }
 }

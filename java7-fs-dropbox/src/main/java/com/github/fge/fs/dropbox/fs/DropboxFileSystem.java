@@ -8,7 +8,6 @@ import com.github.fge.fs.api.path.elements.PathElements;
 import com.github.fge.fs.api.provider.AbstractFileSystemProvider;
 import com.github.fge.fs.dropbox.path.DropboxPath;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 public final class DropboxFileSystem
@@ -25,12 +24,5 @@ public final class DropboxFileSystem
     public Path buildPath(final PathElements elements)
     {
         return new DropboxPath(this, elements, pathContext);
-    }
-
-    @Override
-    protected void doClose()
-        throws IOException
-    {
-
     }
 }

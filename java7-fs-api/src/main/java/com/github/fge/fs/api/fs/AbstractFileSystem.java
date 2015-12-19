@@ -70,15 +70,20 @@ public abstract class AbstractFileSystem
     }
 
     @Override
-    public void close()
+    public final void close()
         throws IOException
     {
-        if (!open.getAndSet(false))
-            doClose();
-    }
+        if (open.getAndSet(false))
+            return;
 
-    protected abstract void doClose()
-        throws IOException;
+        try {
+            driver.close();
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
 
     @Override
     public boolean isOpen()
