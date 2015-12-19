@@ -28,12 +28,6 @@ public abstract class AbstractAttributesProvider<V extends BasicFileAttributeVie
     }
 
     @Override
-    public Class<A> getAttributesClass()
-    {
-        return attributesClass;
-    }
-
-    @Override
     public A getAttributes(final Path path)
         throws IOException
     {
