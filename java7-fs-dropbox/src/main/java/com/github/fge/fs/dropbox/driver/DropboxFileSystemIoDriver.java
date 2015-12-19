@@ -1,8 +1,8 @@
 package com.github.fge.fs.dropbox.driver;
 
-import com.dropbox.core.DbxClient;
-import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
+import com.dropbox.core.v1.DbxClientV1;
+import com.dropbox.core.v1.DbxEntry;
 import com.github.fge.fs.api.directory.DefaultDirectoryStream;
 import com.github.fge.fs.api.driver.ReadOnlyFileSystemIoDriver;
 
@@ -18,9 +18,9 @@ import java.util.stream.Stream;
 public final class DropboxFileSystemIoDriver
     extends ReadOnlyFileSystemIoDriver
 {
-    private final DbxClient client;
+    private final DbxClientV1 client;
 
-    public DropboxFileSystemIoDriver(final DbxClient client)
+    public DropboxFileSystemIoDriver(final DbxClientV1 client)
     {
         this.client = client;
     }
@@ -32,7 +32,7 @@ public final class DropboxFileSystemIoDriver
     {
         final String name = path.toAbsolutePath().toString();
         try {
-            final DbxClient.Downloader downloader
+            final DbxClientV1.Downloader downloader
                 = client.startGetFile(name, null);
             return new DropboxInputStream(downloader);
         } catch (DbxException e) {

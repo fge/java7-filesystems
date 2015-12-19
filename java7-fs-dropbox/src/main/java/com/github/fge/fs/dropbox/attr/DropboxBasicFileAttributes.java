@@ -1,6 +1,6 @@
 package com.github.fge.fs.dropbox.attr;
 
-import com.dropbox.core.DbxEntry;
+import com.dropbox.core.v1.DbxEntry;
 import com.github.fge.fs.api.attr.attributes.AbstractBasicFileAttributes;
 
 import java.nio.file.attribute.FileTime;

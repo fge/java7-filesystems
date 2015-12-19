@@ -1,5 +1,5 @@
 dependencies {
     compile project(":java7-fs-api");
     compile(group: "com.dropbox.core", name: "dropbox-core-sdk",
-        version: "1.8.2");
+        version: "2.0-beta-4");
 }

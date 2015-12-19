@@ -1,6 +1,6 @@
 package com.github.fge.fs.dropbox.driver;
 
-import com.dropbox.core.DbxClient;
+import com.dropbox.core.v1.DbxClientV1;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,10 +8,10 @@ import java.io.OutputStream;
 public final class DropboxOutputStream
     extends OutputStream
 {
-    private final DbxClient.Uploader uploader;
+    private final DbxClientV1.Uploader uploader;
     private final OutputStream delegate;
 
-    public DropboxOutputStream(final DbxClient.Uploader uploader)
+    public DropboxOutputStream(final DbxClientV1.Uploader uploader)
     {
         this.uploader = uploader;
         delegate = uploader.getBody();

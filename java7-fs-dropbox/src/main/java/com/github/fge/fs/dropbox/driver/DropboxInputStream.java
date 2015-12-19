@@ -1,6 +1,6 @@
 package com.github.fge.fs.dropbox.driver;
 
-import com.dropbox.core.DbxClient;
+import com.dropbox.core.v1.DbxClientV1;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,10 +8,10 @@ import java.io.InputStream;
 public final class DropboxInputStream
     extends InputStream
 {
-    private final DbxClient.Downloader downloader;
+    private final DbxClientV1.Downloader downloader;
     private final InputStream delegate;
 
-    public DropboxInputStream(final DbxClient.Downloader downloader)
+    public DropboxInputStream(final DbxClientV1.Downloader downloader)
     {
         this.downloader = downloader;
         delegate = downloader.body;

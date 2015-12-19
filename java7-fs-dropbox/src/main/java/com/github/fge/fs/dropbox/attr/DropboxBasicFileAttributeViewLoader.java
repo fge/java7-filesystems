@@ -1,8 +1,8 @@
 package com.github.fge.fs.dropbox.attr;
 
-import com.dropbox.core.DbxClient;
-import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
+import com.dropbox.core.v1.DbxClientV1;
+import com.dropbox.core.v1.DbxEntry;
 import com.github.fge.fs.api.attr.load.FileAttributeViewLoader;
 
 import java.nio.file.Path;
@@ -11,9 +11,9 @@ import java.nio.file.attribute.BasicFileAttributeView;
 public final class DropboxBasicFileAttributeViewLoader
     implements FileAttributeViewLoader<BasicFileAttributeView>
 {
-    private final DbxClient client;
+    private final DbxClientV1 client;
 
-    public DropboxBasicFileAttributeViewLoader(final DbxClient client)
+    public DropboxBasicFileAttributeViewLoader(final DbxClientV1 client)
     {
         this.client = client;
     }
