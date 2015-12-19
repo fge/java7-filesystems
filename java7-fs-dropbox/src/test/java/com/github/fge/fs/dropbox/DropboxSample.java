@@ -20,7 +20,7 @@ public final class DropboxSample
     public static void main(final String... args)
         throws IOException, DbxException
     {
-        final Path path = Paths.get(System.getenv("user.home"),
+        final Path path = Paths.get(System.getProperty("user.home"),
             ".jsr203", "dropbox.properties");
 
         final Properties properties = new Properties();
@@ -42,7 +42,7 @@ public final class DropboxSample
 
         final DbxFiles files = client.files;
 
-        final DbxFiles.ListFolderResult result = files.listFolder("/");
+        final DbxFiles.ListFolderResult result = files.listFolder("");
 
         for (final DbxFiles.Metadata metadata: result.entries)
             System.out.println(metadata.name);
