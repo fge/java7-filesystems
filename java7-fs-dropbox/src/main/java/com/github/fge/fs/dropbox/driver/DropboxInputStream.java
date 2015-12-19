@@ -1,6 +1,7 @@
 package com.github.fge.fs.dropbox.driver;
 
-import com.dropbox.core.v1.DbxClientV1;
+import com.dropbox.core.DbxDownloader;
+import com.dropbox.core.v2.DbxFiles;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,67 +9,49 @@ import java.io.InputStream;
 public final class DropboxInputStream
     extends InputStream
 {
-    private final DbxClientV1.Downloader downloader;
-    private final InputStream delegate;
+    private final DbxDownloader<DbxFiles.FileMetadata> downloader;
+    private final InputStream in;
 
-    public DropboxInputStream(final DbxClientV1.Downloader downloader)
+    public DropboxInputStream(
+        final DbxDownloader<DbxFiles.FileMetadata> downloader)
     {
         this.downloader = downloader;
-        delegate = downloader.body;
+        in = downloader.body;
     }
 
     @Override
     public int read()
         throws IOException
     {
-        return delegate.read();
+        return in.read();
     }
 
     @Override
     public int read(final byte[] b)
         throws IOException
     {
-        return delegate.read(b);
+        return in.read(b);
     }
 
     @Override
     public int read(final byte[] b, final int off, final int len)
         throws IOException
     {
-        return delegate.read(b, off, len);
+        return in.read(b, off, len);
     }
 
     @Override
     public long skip(final long n)
         throws IOException
     {
-        return delegate.skip(n);
+        return in.skip(n);
     }
 
     @Override
     public int available()
         throws IOException
     {
-        return delegate.available();
-    }
-
-    @Override
-    public synchronized void mark(final int readlimit)
-    {
-        delegate.mark(readlimit);
-    }
-
-    @Override
-    public boolean markSupported()
-    {
-        return delegate.markSupported();
-    }
-
-    @Override
-    public synchronized void reset()
-        throws IOException
-    {
-        delegate.reset();
+        return in.available();
     }
 
     @Override
@@ -76,9 +59,8 @@ public final class DropboxInputStream
         throws IOException
     {
         IOException exception = null;
-
         try {
-            delegate.close();
+            in.close();
         } catch (IOException e) {
             exception = e;
         }
@@ -87,5 +69,24 @@ public final class DropboxInputStream
 
         if (exception != null)
             throw exception;
+    }
+
+    @Override
+    public synchronized void mark(final int readlimit)
+    {
+        in.mark(readlimit);
+    }
+
+    @Override
+    public synchronized void reset()
+        throws IOException
+    {
+        in.reset();
+    }
+
+    @Override
+    public boolean markSupported()
+    {
+        return in.markSupported();
     }
 }

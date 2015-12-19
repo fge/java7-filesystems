@@ -1,42 +1,45 @@
 package com.github.fge.fs.dropbox.attr;
 
-import com.dropbox.core.v1.DbxEntry;
+import com.dropbox.core.v2.DbxFiles;
 import com.github.fge.fs.api.attr.attributes.AbstractBasicFileAttributes;
 
 import java.nio.file.attribute.FileTime;
+import java.util.Date;
 
 public final class DropboxBasicFileAttributes
     extends AbstractBasicFileAttributes
 {
-    private final DbxEntry entry;
+    private final DbxFiles.Metadata metadata;
 
-    public DropboxBasicFileAttributes(final DbxEntry entry)
+    public DropboxBasicFileAttributes(final DbxFiles.Metadata metadata)
     {
-        this.entry = entry;
+        this.metadata = metadata;
     }
 
     @Override
     public boolean isRegularFile()
     {
-        return entry.isFile();
+        return metadata instanceof DbxFiles.FileMetadata;
     }
 
     @Override
     public boolean isDirectory()
     {
-        return entry.isFolder();
+        return metadata instanceof DbxFiles.FolderMetadata;
     }
 
     @Override
     public long size()
     {
-        return isDirectory() ? -1L : entry.asFile().numBytes;
+        return isDirectory() ? 0L : ((DbxFiles.FileMetadata) metadata).size;
     }
 
     @Override
     public FileTime lastModifiedTime()
     {
-        return isDirectory() ? EPOCH
-            : FileTime.from(entry.asFile().lastModified.toInstant());
+        if (isDirectory())
+            return EPOCH;
+        final Date modified = ((DbxFiles.FileMetadata) metadata).serverModified;
+        return FileTime.from(modified.toInstant());
     }
 }

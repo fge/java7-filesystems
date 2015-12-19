@@ -1,8 +1,7 @@
 package com.github.fge.fs.dropbox.attr;
 
 import com.dropbox.core.DbxException;
-import com.dropbox.core.v1.DbxClientV1;
-import com.dropbox.core.v1.DbxEntry;
+import com.dropbox.core.v2.DbxFiles;
 import com.github.fge.fs.api.attr.load.FileAttributeViewLoader;
 
 import java.nio.file.Path;
@@ -11,11 +10,11 @@ import java.nio.file.attribute.BasicFileAttributeView;
 public final class DropboxBasicFileAttributeViewLoader
     implements FileAttributeViewLoader<BasicFileAttributeView>
 {
-    private final DbxClientV1 client;
+    private final DbxFiles files;
 
-    public DropboxBasicFileAttributeViewLoader(final DbxClientV1 client)
+    public DropboxBasicFileAttributeViewLoader(final DbxFiles files)
     {
-        this.client = client;
+        this.files = files;
     }
 
     @Override
@@ -23,7 +22,8 @@ public final class DropboxBasicFileAttributeViewLoader
         throws DbxException
     {
         final String name = path.toAbsolutePath().toString();
-        final DbxEntry entry = client.getMetadata(name);
-        return new DropboxBasicFileAttributeView(entry);
+        final DbxFiles.Metadata metadata
+            = files.getMetadata(path.toAbsolutePath().toString());
+        return new DropboxBasicFileAttributeView(metadata);
     }
 }

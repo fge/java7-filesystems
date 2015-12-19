@@ -42,16 +42,25 @@ public final class DropboxSample
 
         final DbxFiles files = client.files;
 
-        final DbxFiles.ListFolderResult result = files.listFolder("");
-
-        for (final DbxFiles.Metadata metadata: result.entries)
-            System.out.println(metadata.name);
+//        final DbxFiles.ListFolderResult result = files.listFolder("");
+//
+//        for (final DbxFiles.Metadata metadata: result.entries)
+//            System.out.println(metadata.name);
 
         /*
          * It appears that in this metadata, as JSON, an object is returned and
          * that whether it is a file or a directory is identified by the ".tag"
          * object member (values: "file", "folder").
          */
-        System.out.println(files.getMetadata("/resume.pdf").toJson(true));
+        //System.out.println(files.getMetadata("/resume.pdf").toJson(true));
+
+        try {
+            final DbxFiles.ListFolderResult result1 = files
+                .listFolder("/resume.pdf");
+            result1.entries.forEach(System.out::print);
+        } catch (DbxFiles.ListFolderException e) {
+            System.out.println(e.errorValue.getPath().tag);
+            System.out.println(e.errorValue.tag);
+        }
     }
 }

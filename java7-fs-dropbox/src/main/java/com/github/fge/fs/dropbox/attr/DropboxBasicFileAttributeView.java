@@ -1,6 +1,6 @@
 package com.github.fge.fs.dropbox.attr;
 
-import com.dropbox.core.v1.DbxEntry;
+import com.dropbox.core.v2.DbxFiles;
 import com.github.fge.fs.api.attr.views.BasicFileAttributeViewBase;
 
 import java.nio.file.attribute.BasicFileAttributes;
@@ -10,9 +10,9 @@ public final class DropboxBasicFileAttributeView
 {
     private final DropboxBasicFileAttributes attributes;
 
-    public DropboxBasicFileAttributeView(final DbxEntry entry)
+    public DropboxBasicFileAttributeView(final DbxFiles.Metadata metadata)
     {
-        attributes = new DropboxBasicFileAttributes(entry);
+        attributes = new DropboxBasicFileAttributes(metadata);
     }
 
     @Override
