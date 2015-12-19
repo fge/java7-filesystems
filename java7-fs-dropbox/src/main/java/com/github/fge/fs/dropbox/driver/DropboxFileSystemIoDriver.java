@@ -5,14 +5,13 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxFiles;
 import com.github.fge.fs.api.directory.DefaultDirectoryStream;
 import com.github.fge.fs.api.driver.ReadOnlyFileSystemIoDriver;
+import com.github.fge.fs.dropbox.DropboxExceptionUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.AccessMode;
 import java.nio.file.DirectoryStream;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.NotDirectoryException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -37,36 +36,15 @@ public final class DropboxFileSystemIoDriver
         throws IOException
     {
         final String dbxPath = toDropboxPath(path);
-        final DbxDownloader<DbxFiles.FileMetadata> start;
+        final DbxDownloader<DbxFiles.FileMetadata> downloader;
         try {
-            start = files.downloadBuilder(dbxPath).start();
+            downloader = files.downloadBuilder(dbxPath).start();
         } catch (DbxFiles.DownloadException e) {
-            IOException exception = null;
-            if (e.errorValue.tag == DbxFiles.DownloadError.Tag.path) {
-                switch (e.errorValue.getPath().tag) {
-                    case notFile:
-                        exception = new IOException(dbxPath
-                            + " is not a regular file");
-                        break;
-                    case notFound:
-                        exception = new NoSuchFileException(dbxPath);
-                        break;
-                    case restrictedContent:
-                        exception = new AccessDeniedException(dbxPath);
-                        // no other tags are interesting
-                }
-            }
-            if (exception != null)
-                exception.addSuppressed(e);
-            else
-                exception = new IOException(e);
-            throw exception;
+            throw DropboxExceptionUtil.wrap(dbxPath, e);
         } catch (DbxException e) {
             throw new IOException(e);
         }
-        start.close();
-        // TODO
-        return null;
+        return new DropboxInputStream(downloader);
     }
 
     @Override
@@ -78,20 +56,7 @@ public final class DropboxFileSystemIoDriver
         try {
             metadata = files.getMetadata(dbxPath);
         } catch (DbxFiles.GetMetadataException e) {
-            IOException exception = null;
-            switch (e.errorValue.getPath().tag) {
-                case notFound:
-                    exception = new NoSuchFileException(dbxPath);
-                    break;
-                case restrictedContent:
-                    exception = new AccessDeniedException(dbxPath);
-                    // no other tag is interesting
-            }
-            if (exception != null)
-                exception.addSuppressed(e);
-            else
-                exception = new IOException(e);
-            throw exception;
+            throw DropboxExceptionUtil.wrap(dbxPath, e);
         } catch (DbxException e) {
             throw new IOException(e);
         }
@@ -117,25 +82,7 @@ public final class DropboxFileSystemIoDriver
         try {
             result = builder.start();
         } catch (DbxFiles.ListFolderException e) {
-            final DbxFiles.ListFolderError.Tag tag = e.errorValue.tag;
-            IOException exception = null;
-            if (tag == DbxFiles.ListFolderError.Tag.path) {
-                switch (e.errorValue.getPath().tag) {
-                    case notFolder:
-                        exception = new NotDirectoryException(dbxPath);
-                        break;
-                    case notFound:
-                        exception = new NoSuchFileException(dbxPath);
-                        break;
-                    case restrictedContent:
-                        exception = new AccessDeniedException(dbxPath);
-                        // no other tag is interesting
-                }
-            }
-            if (exception == null)
-                throw new IOException(e);
-            exception.addSuppressed(e);
-            throw exception;
+            throw DropboxExceptionUtil.wrap(dbxPath, e);
         } catch (DbxException e) {
             throw new IOException(e);
         }
