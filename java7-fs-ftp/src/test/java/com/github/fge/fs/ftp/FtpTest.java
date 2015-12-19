@@ -1,6 +1,7 @@
 package com.github.fge.fs.ftp;
 
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.IOException;
 
@@ -14,12 +15,14 @@ public final class FtpTest
         final String passwd = "sonar";
 
         final FTPClient client = new FTPClient();
-        client.setListHiddenFiles(true);
         client.connect(ip);
         if (!client.login(user, passwd))
             throw new IllegalArgumentException();
 
-        System.out.println(client.list("soft"));
+        final FTPFile file = client.listFiles("x")[0];
+        System.out.println(file.isDirectory());
+        System.out.println(file.hasPermission(FTPFile.READ_PERMISSION,
+            FTPFile.USER_ACCESS));
 
         System.out.println(client.logout());
     }
