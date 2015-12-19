@@ -57,8 +57,10 @@ public final class FtpInputStream
         throws IOException
     {
         IOException exception = null;
+
         if (!client.completePendingCommand())
             exception = new IOException();
+
         try {
             in.close();
         } catch (IOException e) {

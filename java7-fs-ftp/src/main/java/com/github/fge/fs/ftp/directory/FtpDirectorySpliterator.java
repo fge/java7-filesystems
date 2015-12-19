@@ -19,11 +19,11 @@ public final class FtpDirectorySpliterator
     private int entriesSize;
     private int entriesIndex;
 
-    public FtpDirectorySpliterator(final Path dir,
-        final FTPListParseEngine engine)
+    public FtpDirectorySpliterator(final Path baseDir,
+        final FTPListParseEngine parseEngine)
     {
-        baseDir = dir;
-        parseEngine = engine;
+        this.baseDir = baseDir;
+        this.parseEngine = parseEngine;
     }
 
     @Override

@@ -59,8 +59,10 @@ public final class FtpFileSystemIoDriver
     {
         final String ftpPath = getFtpPath(path);
         final FTPFile ftpFile = getFtpFileForPath(ftpPath, AccessMode.READ);
+
         if (!ftpFile.isFile())
             throw new IOException(ftpPath + " is not a regular file");
+
         final InputStream stream = client.retrieveFileStream(ftpPath);
         if (stream == null)
             throw new IOException("FTP error :" + client.getReplyCode());

@@ -11,11 +11,11 @@ import java.nio.file.attribute.BasicFileAttributeView;
 public final class DropboxBasicFileAttributeViewLoader
     implements FileAttributeViewLoader<BasicFileAttributeView>
 {
-    private final DbxClient dbxClient;
+    private final DbxClient client;
 
-    public DropboxBasicFileAttributeViewLoader(final DbxClient dbxClient)
+    public DropboxBasicFileAttributeViewLoader(final DbxClient client)
     {
-        this.dbxClient = dbxClient;
+        this.client = client;
     }
 
     @Override
@@ -23,7 +23,7 @@ public final class DropboxBasicFileAttributeViewLoader
         throws DbxException
     {
         final String name = path.toAbsolutePath().toString();
-        final DbxEntry entry = dbxClient.getMetadata(name);
+        final DbxEntry entry = client.getMetadata(name);
         return new DropboxBasicFileAttributeView(entry);
     }
 }

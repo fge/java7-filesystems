@@ -10,9 +10,9 @@ public final class FtpBasicFileAttributes
 {
     private final FTPFile ftpFile;
 
-    public FtpBasicFileAttributes(final FTPFile file)
+    public FtpBasicFileAttributes(final FTPFile ftpFile)
     {
-        ftpFile = file;
+        this.ftpFile = ftpFile;
     }
 
     @Override

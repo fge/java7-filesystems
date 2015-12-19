@@ -18,11 +18,11 @@ import java.util.stream.Stream;
 public final class DropboxFileSystemIoDriver
     extends ReadOnlyFileSystemIoDriver
 {
-    private final DbxClient dbxClient;
+    private final DbxClient client;
 
-    public DropboxFileSystemIoDriver(final DbxClient dbxClient)
+    public DropboxFileSystemIoDriver(final DbxClient client)
     {
-        this.dbxClient = dbxClient;
+        this.client = client;
     }
 
     @Override
@@ -33,7 +33,7 @@ public final class DropboxFileSystemIoDriver
         final String name = path.toAbsolutePath().toString();
         try {
             final DbxClient.Downloader downloader
-                = dbxClient.startGetFile(name, null);
+                = client.startGetFile(name, null);
             return new DropboxInputStream(downloader);
         } catch (DbxException e) {
             throw new IOException(e);
@@ -57,7 +57,7 @@ public final class DropboxFileSystemIoDriver
 
         final DbxEntry.WithChildren children;
         try {
-            children = dbxClient.getMetadataWithChildren(name);
+            children = client.getMetadataWithChildren(name);
         } catch (DbxException e) {
             throw new IOException(e);
         }

@@ -6,8 +6,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 public interface AttributesProvider<A extends BasicFileAttributes>
 {
-    Class<A> getAttributesClass();
-
     A getAttributes(Path path)
         throws IOException;
 }

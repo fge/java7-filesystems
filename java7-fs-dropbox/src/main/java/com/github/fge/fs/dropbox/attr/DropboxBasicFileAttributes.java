@@ -8,35 +8,35 @@ import java.nio.file.attribute.FileTime;
 public final class DropboxBasicFileAttributes
     extends AbstractBasicFileAttributes
 {
-    private final DbxEntry dbxEntry;
+    private final DbxEntry entry;
 
     public DropboxBasicFileAttributes(final DbxEntry entry)
     {
-        dbxEntry = entry;
+        this.entry = entry;
     }
 
     @Override
     public boolean isRegularFile()
     {
-        return dbxEntry.isFile();
+        return entry.isFile();
     }
 
     @Override
     public boolean isDirectory()
     {
-        return dbxEntry.isFolder();
+        return entry.isFolder();
     }
 
     @Override
     public long size()
     {
-        return isDirectory() ? -1L : dbxEntry.asFile().numBytes;
+        return isDirectory() ? -1L : entry.asFile().numBytes;
     }
 
     @Override
     public FileTime lastModifiedTime()
     {
         return isDirectory() ? EPOCH
-            : FileTime.from(dbxEntry.asFile().lastModified.toInstant());
+            : FileTime.from(entry.asFile().lastModified.toInstant());
     }
 }
