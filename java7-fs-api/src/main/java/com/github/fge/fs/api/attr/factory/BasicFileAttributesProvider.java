@@ -9,7 +9,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 public class BasicFileAttributesProvider
     extends AbstractAttributesProvider<BasicFileAttributeView, BasicFileAttributes>
 {
-    protected BasicFileAttributesProvider(
+    public BasicFileAttributesProvider(
         final FileAttributeViewLoader<BasicFileAttributeView> loader)
     {
         super(BasicFileAttributes.class, loader,
