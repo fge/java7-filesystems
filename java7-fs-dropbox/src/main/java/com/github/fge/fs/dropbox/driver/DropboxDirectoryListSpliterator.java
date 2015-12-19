@@ -26,10 +26,7 @@ public final class DropboxDirectoryListSpliterator
         this.result = result;
         cursor = result.cursor;
 
-        hasMore = result.hasMore;
-        entries = result.entries;
-        entriesSize = entries.size();
-        entriesIndex = 0;
+        updateData(result);
     }
 
     @Override
@@ -43,10 +40,7 @@ public final class DropboxDirectoryListSpliterator
             } catch (DbxException e) {
                 throw new RuntimeException(e);
             }
-            hasMore = result.hasMore;
-            entries = result.entries;
-            entriesSize = entries.size();
-            entriesIndex = 0;
+            updateData(result);
         }
 
         action.accept(entries.get(entriesIndex++).name);
@@ -69,5 +63,13 @@ public final class DropboxDirectoryListSpliterator
     public int characteristics()
     {
         return DISTINCT | ORDERED | IMMUTABLE | NONNULL;
+    }
+
+    private void updateData(final DbxFiles.ListFolderResult result)
+    {
+        hasMore = result.hasMore;
+        entries = result.entries;
+        entriesSize = entries.size();
+        entriesIndex = 0;
     }
 }

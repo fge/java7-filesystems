@@ -22,8 +22,7 @@ public final class DropboxBasicFileAttributeViewLoader
         throws DbxException
     {
         final String name = path.toAbsolutePath().toString();
-        final DbxFiles.Metadata metadata
-            = files.getMetadata(path.toAbsolutePath().toString());
+        final DbxFiles.Metadata metadata = files.getMetadata(name);
         return new DropboxBasicFileAttributeView(metadata);
     }
 }

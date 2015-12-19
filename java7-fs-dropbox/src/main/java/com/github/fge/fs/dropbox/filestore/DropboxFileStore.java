@@ -7,10 +7,8 @@ import com.github.fge.fs.dropbox.DropboxFileSystemConstants;
 public final class DropboxFileStore
     extends AbstractFileStore
 {
-    public DropboxFileStore(
-        final FileAttributeViewFactory fileAttributeViewFactory)
+    public DropboxFileStore(final FileAttributeViewFactory viewFactory)
     {
-        super(DropboxFileSystemConstants.FILESTORE_NAME,
-            fileAttributeViewFactory);
+        super(DropboxFileSystemConstants.FILESTORE_NAME, viewFactory);
     }
 }
