@@ -46,5 +46,12 @@ public final class DropboxSample
 
         for (final DbxFiles.Metadata metadata: result.entries)
             System.out.println(metadata.name);
+
+        /*
+         * It appears that in this metadata, as JSON, an object is returned and
+         * that whether it is a file or a directory is identified by the ".tag"
+         * object member (values: "file", "folder").
+         */
+        System.out.println(files.getMetadata("/resume.pdf").toJson(true));
     }
 }
