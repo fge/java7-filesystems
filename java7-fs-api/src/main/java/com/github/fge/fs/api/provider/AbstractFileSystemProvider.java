@@ -48,7 +48,6 @@ import java.util.regex.Pattern;
 public abstract class AbstractFileSystemProvider
     extends FileSystemProvider
 {
-    private static final Pattern SLASH = Pattern.compile("/");
     private static final String ALL_ATTRS = "*";
     private static final Pattern COMMA = Pattern.compile(",");
 
@@ -274,10 +273,10 @@ public abstract class AbstractFileSystemProvider
     public <V extends FileAttributeView> V getFileAttributeView(final Path path,
         final Class<V> type, final LinkOption... options)
     {
-        final FileAttributeViewFactory factory = getAttributeFactory(path);
+        final FileAttributeViewFactory viewFactory = getViewFactory(path);
 
         final AttributeViewProvider<V> provider
-            = factory.getProviderForClass(type);
+            = viewFactory.getProviderForClass(type);
 
         if (provider == null)
             throw new UnsupportedOperationException();
@@ -290,10 +289,10 @@ public abstract class AbstractFileSystemProvider
         final Class<A> type, final LinkOption... options)
         throws IOException
     {
-        final FileAttributeViewFactory factory = getAttributeFactory(path);
+        final FileAttributeViewFactory viewFactory = getViewFactory(path);
 
         final AttributesProvider<A> provider
-            = factory.getAttributesProvider(type);
+            = viewFactory.getAttributesProvider(type);
 
         if (provider == null)
             throw new UnsupportedOperationException();
@@ -319,10 +318,10 @@ public abstract class AbstractFileSystemProvider
             attrs = attributes.substring(index + 1);
         }
 
-        final FileAttributeViewFactory factory = getAttributeFactory(path);
+        final FileAttributeViewFactory viewFactory = getViewFactory(path);
 
         final AttributeViewProvider<?> provider
-            = factory.getProviderForName(name);
+            = viewFactory.getProviderForName(name);
 
         if (provider == null)
             throw new UnsupportedOperationException();
@@ -342,24 +341,42 @@ public abstract class AbstractFileSystemProvider
 
     @Override
     public void setAttribute(final Path path, final String attribute,
-        final Object value,
-        final LinkOption... options)
+        final Object value, final LinkOption... options)
         throws IOException
     {
-        // TODO
+        final String name;
+        final String attr;
+        final int index = attribute.indexOf(':');
 
+        if (index == -1) {
+            name = StandardAttributeViewNames.BASIC;
+            attr = attribute;
+        } else {
+            name = attribute.substring(0, index);
+            attr = attribute.substring(index + 1);
+        }
+
+        final FileAttributeViewFactory viewFactory = getViewFactory(path);
+
+        final AttributeViewProvider<?> provider
+            = viewFactory.getProviderForName(name);
+
+        if (provider == null)
+            throw new UnsupportedOperationException();
+
+        final NameDispatcher dispatcher = provider.getNameDispatcher(path);
+
+        dispatcher.writeByBame(attr, value);
     }
 
-    @VisibleForTesting
-    protected static FileSystemDriver getDriver(final Path path)
+    private static FileSystemDriver getDriver(final Path path)
     {
         final AbstractFileSystem fs = (AbstractFileSystem) path.getFileSystem();
         return fs.getDriver();
     }
 
-    private static FileAttributeViewFactory getAttributeFactory(final Path path)
+    private static FileAttributeViewFactory getViewFactory(final Path path)
     {
-        return ((AbstractFileSystem) path.getFileSystem())
-            .getAttributeFactory();
+        return ((AbstractFileSystem) path.getFileSystem()).getViewFactory();
     }
 }

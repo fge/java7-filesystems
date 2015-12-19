@@ -63,10 +63,10 @@ public abstract class AbstractFileSystem
         return driver;
     }
 
-    public final FileAttributeViewFactory getAttributeFactory()
+    public final FileAttributeViewFactory getViewFactory()
     {
         ensureOpen();
-        return fileStore.getAttributeFactory();
+        return fileStore.getViewFactory();
     }
 
     @Override

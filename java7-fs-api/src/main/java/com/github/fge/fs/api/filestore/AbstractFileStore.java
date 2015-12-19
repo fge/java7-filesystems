@@ -31,25 +31,25 @@ public abstract class AbstractFileStore
 {
     protected final String name;
     protected final String type;
-    protected final FileAttributeViewFactory attributeFactory;
+    protected final FileAttributeViewFactory viewFactory;
 
     protected AbstractFileStore(final String name, final String type,
-        final FileAttributeViewFactory attributeFactory)
+        final FileAttributeViewFactory viewFactory)
     {
         this.name = name;
         this.type = type;
-        this.attributeFactory = attributeFactory;
+        this.viewFactory = viewFactory;
     }
 
     protected AbstractFileStore(final String name,
-        final FileAttributeViewFactory attributeFactory)
+        final FileAttributeViewFactory viewFactory)
     {
-        this(name, name, attributeFactory);
+        this(name, name, viewFactory);
     }
 
-    public final FileAttributeViewFactory getAttributeFactory()
+    public final FileAttributeViewFactory getViewFactory()
     {
-        return attributeFactory;
+        return viewFactory;
     }
 
     @Override
@@ -95,13 +95,13 @@ public abstract class AbstractFileStore
     public final boolean supportsFileAttributeView(
         final Class<? extends FileAttributeView> type)
     {
-        return attributeFactory.getProviderForClass(type) != null;
+        return viewFactory.getProviderForClass(type) != null;
     }
 
     @Override
     public final boolean supportsFileAttributeView(final String name)
     {
-        return attributeFactory.getProviderForName(name) != null;
+        return viewFactory.getProviderForName(name) != null;
     }
 
     @Override
